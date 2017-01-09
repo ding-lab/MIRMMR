@@ -24,10 +24,11 @@ MSI statistical model building using methylation and mutation data
   2. Methods
   3. Results
   4. Conclusions
+
 ---
 # Usage
 ```
-MSImodel *module* *input* *output* [options]
+MSImodel module input output [options]
 ```
 ---
 # Modules
