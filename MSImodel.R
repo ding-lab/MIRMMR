@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library("optparse"))
 
 #set options
 option_list <- list(
-  make_option(c("-m", "--module"), default=NULL, type="character", help="What module should be run (compare, penalized, predict, stepwise, univariate), must be specified"),
+  make_option(c("-m", "--module"), default=NULL, type="character", help="What module should be run (compare, penalized, stepwise, univariate), must be specified"),
   make_option(c("-d", "--data_frame"), default=NULL, type="character", help="File path to data frame, must be specified"),
   make_option(c("-i", "--msi_score"), default=NULL, type=NULL, help="Column name or number referring to MSI score (numeric, or binary vector), must be specified"),
   make_option(c("-c", "--first_data_column"), default=NULL, type="integer", help="Column number referring to first parameter in data frame, assuming all higher columns are also parameters, must be specified"),
