@@ -1,31 +1,33 @@
 #This script parses command line arguments and runs specified analysis module
 
-suppressPackageStartupMessages(require("argparse"))
+suppressPackageStartupMessages(library("optparse"))
 
 #create parser object
 parser <- ArgumentParser()
 
-#set options
-#Related to all modules
-parser$add_argument("-c", "--first_data_column", numeric) #column number of first model parameter (assumes all columns above this one are also model parameters)
-parser$add_argument("-d", "--data_frame", ) #location of the data frame
-parser$add_argument("-i", "--msi_score", ) #column name or number of the data frame refering to true MSI measurement
-parser$add_argument("-m", "--module", action) #what module to run
-#Related to penalized.R module
-parser$add_argument("-a", "--alpha", default 0.9, alpha for cv.glmnet())
-parser$add_argument("-f", "--folds", default 10, number of folder for cv.glmnet())
-parser$add_argument("-l", "--lambda", default NONE, use this lambda instead of cv calculation)
-parser$add_argument("-n", "--number_repititions", default 1000, number of times to repeat penalized testing)
-parser$add_argument("-p", "--train_proportion", default 0.8, proportion of data to use as training set)
-parser$add_argument("-s", "--set_seed", defaults to False, unless given numeric or TRUE alternative)
-parser$add_argument("-t", "--type_measure", default class, which accuracy measure to use for cv.glmnet())
 
+#type can be logical, integer, double, complex, character
+#set options
+option_list <- list(
+  make_option(c("-m", "--module"), default=NULL, type="character", help="What module should be run (compare, penalized, predict, stepwise, univariate), must be specified"),
+  make_option(c("-d", "--data_frame"), default=NULL, type="character", help="File path to data frame, must be specified"),
+  make_option(c("-i", "--msi_score"), default=NULL, type=NULL, help="Column name or number referring to MSI score, must be specified unless using predict module"),
+  make_option(c("-c", "--first_data_column"), default=NULL, type="integer", help="Column number referring to first parameter in data frame, assuming all higher columns are also parameters, must be specified"),
+  make_option(c("-a", "--alpha"), default=0.9, type="double", help="Parameter alpha used in glmnet::glmnet, default=%default"),
+  make_option(c("-f", "--nfolds"), default=10, type="integer", help="Parameter nfolds used in glmnet::cv.glmnet, default=%default"),
+  make_option(c("-l", "--lambda"), default="lambda.1se", type="character", help="Parameter lambda used in glmnet::cv.glmnet, default=\"%default\", options: lambda.1se, lambda.min")
+  make_option(c("-n", "--number_repetitions"), default=1000, type="integer", help="Number of times to repeat testing to determine optimal lambda in penalized module, default=%default"),
+  make_option(c("-p", "--train_proportion"), default=0.8, type="double", help="Proportion of samples to retain in training set in penalized module, default=%default"),
+  make_option(c("-s", "--set_seed"), default=FALSE, type=NULL, help="Option to set seed before penalized module, seed can be set to any number, default=\"%default\""),
+  make_option(c("-t", "--type_measure"), default="class", type="character", help="Parameter type.measure used in glmnet::cv.glmnet, default=\"%default\", options: mse, deviance, mae, class, auc")
+  make_option(c("-v", "--verbose"), default=TRUE, type="logical", help="Print extra output along the way, default=%default"),
+)
 
 #retrieve command line arguments
-args <- parser$parse_args()
+opt <- parse_args(OptionParser(option_list=option_list))
 
 #How to print verbose output to stderr
-if( args$verbose ){
+if( opt$verbose ){
   write("Write some message here...\n", stderr())
 }
 
@@ -33,4 +35,4 @@ if( args$verbose ){
 #Need this is refer to script directory MSImodel/modules
 #http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script
 run set seed if TRUE or numeric 
-source(paste0("modules/", args$module, ".R"))
+source(paste0("modules/", opt$module, ".R"))
