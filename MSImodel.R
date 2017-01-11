@@ -16,6 +16,8 @@ option_list <- list(
   make_option(c("-s", "--set_seed"), default=FALSE, type=NULL, help="Option to set seed before penalized module, seed can be set to any number, default=\"%default\""),
   make_option(c("-t", "--type_measure"), default="class", type="character", help="Parameter type.measure used in glmnet::cv.glmnet, default=\"%default\", options: mse, deviance, mae, class, auc"),
   make_option(c("-v", "--verbose"), default=TRUE, type="logical", help="Print extra output along the way, default=%default")
+  make_option(c("--test"), default=FALSE, type="logical", help="Internal use: testing penalized module results."),
+  make_option(c("--time"), default=FALSE, type="logical", help="Internal use: report time to complete analysis.")
 )
 
 #retrieve command line arguments
@@ -35,6 +37,10 @@ if( is.null(opt$data_frame) | !file.exists(opt$data_frame) ){
 #proceed with importing data_frame
 if( is.null(error_message) ){
   df <- read.table(opt$data_frame, header=TRUE)
+  if( any(is.na(df)) ){
+    error_message <- paste0(error_message, "Data frame (-d) contains missing data. User should make appropriate adjustments by removing samples or parameters with missing data or using imputation.")
+    stop(error_message)
+  } 
 } else{
   stop(error_message)
 }
@@ -88,7 +94,6 @@ if( opt$module == "penalized" ){
   if( !(opt$type_measure %in% c("mse", "deviance", "mae", "class", "auc")) ){
     error_message <- paste0(error_message, "Penalized regression parameter type_measuge (-t) must be mse, deviance, mae, class, or auc, default is class.\n")
   }
-
 }
 
 #If there is no error message to report, run the specified module
