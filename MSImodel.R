@@ -47,9 +47,14 @@ if( is.null(error_message) ){
 
 #secondary checks of command line arguments
 #check msi_score
-if( is.null(opt$msi_score) | !(opt$msi_score %in% names(df)) ){
-  error_message <- paste0(error_message, "MSI score (-i) column name must be specified, or column name does not exist in data frame.\n")
+if( is.null(opt$msi_score) ){
+  error_message <- paste0(error_message, "MSI score (-i) column name or number must be specified.\n")
+} else if( !(opt$msi_score %in% names(df)) | (is.numeric(opt$msi_score) & opt$msi_score > ncol(df)-1) ){
+  error_message <- paste0(error_message, "MSI score (-i) column name does not exist in data frame or column number is out of range.\n")
+} else if( length(levels(droplevels(as.factor(df[,opt$msi_score])))) < 2 ){
+  error_message <- paste0(error_message, "MSI score (-i) column contains fewer than two levels (must contain two factors or have many numeric values).\n")
 }
+
 #check first_data_column
 if( is.null(opt$c) | opt$c < 2 | opt$c > ncol(df) | opt$c!=round(opt$c)){
   error_message <- paste0(error_message, "First data column (-c) must be specified, or number is not an integer or out of bounds.\n")
