@@ -15,9 +15,11 @@ option_list <- list(
   make_option(c("-p", "--train_proportion"), default=0.8, type="double", help="Proportion of samples to retain in training set in penalized module, default=%default"),
   make_option(c("-s", "--set_seed"), default=FALSE, type=NULL, help="Option to set seed before penalized module, seed can be set to any number, default=\"%default\""),
   make_option(c("-t", "--type_measure"), default="class", type="character", help="Parameter type.measure used in glmnet::cv.glmnet, default=\"%default\", options: mse, deviance, mae, class, auc"),
-  make_option(c("-v", "--verbose"), default=TRUE, type="logical", help="Print extra output along the way, default=%default")
+  make_option(c("-v", "--verbose"), default=TRUE, type="logical", help="Print extra output along the way, default=%default"),
+  make_option(c("--plots"), default=FALSE, type="logical", help="Produce informative plots in the penalized module."),
   make_option(c("--test"), default=FALSE, type="logical", help="Internal use: testing penalized module results."),
-  make_option(c("--time"), default=FALSE, type="logical", help="Internal use: report time to complete analysis.")
+  make_option(c("--time"), default=FALSE, type="logical", help="Internal use: report time to complete analysis."),
+  make_option(c("--consensus"), default=FALSE, type="logical", help="Internal use: consensus method to find best lambda in the penalized module. Only useful when used with --plots.")
 )
 
 #retrieve command line arguments
