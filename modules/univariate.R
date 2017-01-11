@@ -1,16 +1,7 @@
 #Module returns univariate model p-values for each parameter in data frame
-col <- opt$msi_score
-fdc <- opt$first_data_column
-
-#Check if MSI score column is binary (use logistic regression) or not (use linear regression)
-if( length(levels(droplevels(as.factor(df[,col]))))==2 ){
-  msi_binary <- TRUE
-} else if( length(levels(droplevels(as.factor(df[,col]))))>2 ){
-  msi_binary <- FALSE
-}
-else{
-  stop("Whoa, MSI score column should have more than one level.\n") 
-}
+#col <- opt$msi_score
+#fdc <- opt$first_data_column
+#msi_binary is TRUE if only two factors in MSI score column, FALSE otherwise
 
 #Vector of parameters
 params <- names(df)[fdc:ncol(df)]
