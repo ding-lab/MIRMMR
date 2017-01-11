@@ -101,7 +101,20 @@ if( opt$module == "penalized" ){
   }
 }
 
-#If there is no error message to report, run the specified module
+#First check if MSI score column is binary (logistic) or not (linear)
+col <- opt$msi_score
+fdc <- opt$first_data_column
+
+if( length(levels(droplevels(as.factor(df[,col]))))==2 ){
+  msi_binary <- TRUE
+} else if( length(levels(droplevels(as.factor(df[,col]))))>2 ){
+  msi_binary <- FALSE
+}
+else{
+  error_message <- paste0(error_message, "Whoa, MSI score column should have more than one level.\n")
+}
+
+#Now run specified model
 if( !is.null(error_message) ){
   stop(error_message)
 } else{
