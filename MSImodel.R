@@ -12,13 +12,11 @@ option_list <- list(
   make_option(c("-d", "--output_directory"), default="", type="character", help="Output directory, must be specified"),
   make_option(c("--plots"), default=FALSE, type="logical", help="Produce informative plots in the penalized module, default=%default"),
   make_option(c("--alpha"), default=0.9, type="double", help="Penalized module: Parameter alpha used in glmnet::glmnet, default=%default"),
-  make_option(c("--consensus"), default=FALSE, type="logical", help="Penalized module: also use consensus method to find best lambda in the penalized module, only useful when used with --plots, default=%default"),
+  make_option(c("--consensus"), default=FALSE, type="logical", help="Penalized module: Use consensus method in additional to best lambda method to find set of coefficients that appear in most models, only useful when used with --plots, default=%default"),
   make_option(c("--lambda"), default="lambda.1se", type="character", help="Penalized module: Parameter lambda used in glmnet::cv.glmnet, default=\"%default\", options: lambda.1se, lambda.min"),
   make_option(c("--nfolds"), default=10, type="integer", help="Penalized module: Parameter nfolds used in glmnet::cv.glmnet, default=%default"),
-  make_option(c("--number_repetitions"), default=1000, type="integer", help="Penalized module: Number of times to repeat testing to determine optimal lambda in penalized module, default=%default"),
-  make_option(c("--parallel"), default=FALSE, type="logical", help="Penalized module: Run penalized regression module in parallel, if possible, default=%default"),
+  make_option(c("--repeats"), default=1000, type="integer", help="Penalized module: Number of times to repeat testing to determine optimal lambda in penalized module, default=%default"),
   make_option(c("--set_seed"), default=FALSE, type=NULL, help="Penalized module: Option to set seed before penalized module, seed can be set to any number or TRUE (1), default=%default"),
-  make_option(c("--train_proportion"), default=0.8, type="double", help="Penalized module: Proportion of samples to retain in training set in penalized module, default=%default"),
   make_option(c("--type_measure"), default="class", type="character", help="Penalized module: Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default")
 )
 
