@@ -2,7 +2,7 @@
 
 suppressPackageStartupMessages(library("optparse"))
 
-#set options
+#Set options
 option_list <- list(
   make_option(c("-m", "--module"), default=NULL, type="character", help="What module should be run (compare, penalized, stepwise, univariate), must be specified"),
   make_option(c("-d", "--data_frame"), default=NULL, type="character", help="File path to data frame, must be specified"),
@@ -22,8 +22,8 @@ option_list <- list(
   make_option(c("--type_measure"), default="class", type="character", help="Penalized module: Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default")
 )
 
-#retrieve command line arguments
-opt <- parse_args(OptionParser(usage="%prog -m MODULE -d DATA_FRAME -i MSI_STATUS -c FIRST_DATA_COLUMN -p OUTPUT_PREFIX -d OUTPUT_DIRECTORY [options]\n\nAssumptions:\n1. The data frame has meta information columns (e.g. sample name, cancer type, MSI score)\n2. Followed by data columns (i.e. predictors in regression models)\n3. And that the input data frame has column headers.", option_list=option_list))
+#Retrieve command line arguments
+opt <- parse_args(OptionParser(usage="%prog -m MODULE -d DATA_FRAME -i MSI_STATUS -c FIRST_DATA_COLUMN -o OUTPUT_PREFIX -d OUTPUT_DIRECTORY [options]\n\nAssumptions:\n1. The data frame has meta information columns (e.g. sample name, cancer type, MSI score)\n2. Followed by data columns (i.e. predictors in regression models)\n3. And that the input data frame has column headers.", option_list=option_list))
 
 #Need these to refer to script directory MSImodel/modules
 #http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script
