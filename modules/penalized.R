@@ -14,48 +14,104 @@ suppressPackageStartupMessage(library(glmnet))
 myX <- as.matrix(df[,fdc:ncol(df)])
 myY <- as.numeric(df[,col])
 
-#Keep track of which variables in each model
-variables_in_model <- vector("list", opt$n)
-for(i in 1:opt$n){
-  print(i)
-  if( msi_binary){ 
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$f, family="binomial", type.measure=opt$t, alpha=opt$a)
-  } else{
-    #FIT linear model
+#Function +++++++++++++++++++++++++++++
+#Track how many times each variable appears in models
+consensus_parameters <- function(opt, msi_binary, myX, myY){
+  variables_in_model <- vector("list", opt$n)
+  for(i in 1:opt$n){
+    if( msi_binary ){ 
+      cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$f, family="binomial", type.measure=opt$t, alpha=opt$a)
+    } else{
+      #FIT linear model
+    }
+    variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$l))[coef(cvfit, s=opt$l)[,1] != 0]
   }
-  variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$l))[coef(cvfit, s=opt$l)[,1] != 0]
+  variables_in_model_df <- data.frame(table(unlist(variables_in_model)))
+  names(variables_in_model_df) <- c("Parameter","Count")
+  return(variables_in_model_df)
 }
 
-#Find mean lambda
-#Modified from stackexchange user 'Sideshow Bob', answer from 2016/03/31.
+#Function +++++++++++++++++++++++++++++
+#Find best lambda and return model with best lambda coefficients 
+#Modified from stackexchange user 'Sideshow Bob', answer from 2016/03/31. Thanks!
 #http://stats.stackexchange.com/questions/97777/variablity-in-cv-glmnet-results/173895#173895
-lambdas = NULL
-for (i in 1:opt$n){
-  print(i)
+best_lambda_model <- function(opt, msi_binary, myX, myY){
+  lambdas = NULL
+  for (i in 1:opt$n){
+    if( msi_binary ){
+      cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$f, family="binomial", type.measure=opt$t, alpha=opt$a)
+    } else{
+      #FIT linear model
+    }
+    #TODO: optimize this with prespecified data frame or list structure for lambdas
+    errors <- data.frame(cvfit$lambda,cvfit$cvm)
+    lambdas <- rbind(lambdas,errors)
+  }
+  
+  # take mean cvm for each lambda
+  lambdas <- aggregate(lambdas[,2], list(lambdas$cvfit.lambda), mean)
+
+  # select the best one
+  bestindex = which(lambdas[,2]==min(lambdas[,2]))
+  bestlambda = lambdas[bestindex,1]
+
+  # and now run glmnet once more with it
   if( msi_binary ){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$f, family="binomial", type.measure=opt$t, alpha=opt$a)
+    glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$a)
   } else{
     #FIT linear model
   }
-  errors <- data.frame(cvfit$lambda,cvfit$cvm)
-  lambdas <- rbind(lambdas,errors)
-}
-# take mean cvm for each lambda
-lambdas <- aggregate(lambdas[,2], list(lambdas$cvfit.lambda), mean)
 
-# select the best one
-bestindex = which(lambdas[,2]==min(lambdas[,2]))
-bestlambda = lambdas[bestindex,1]
-
-# and now run glmnet once more with it
-if( msi_binary ){
-  glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$a)
-} else{
-  #FIT linear model
+  # Determine the coeffients in model derived from best lambda
+  best_coef_indicator <- coef(glmnet.fit)[,1] != 0
+  coefs_in_best_model <- rownames(coef(glmnet.fit))[best_coef_indicator]
+  
+  # Fit a model lm() or glm() using coefficients from above
+  model_df <- data.frame(myY, myX[, names(myX) %in% coefs_in_best_model])
+  names(model_df)[1] <- "outcome"
+  if( msi_binary ){
+    model <- glm( outcome ~ ., data=model_df, family=binomial)
+  } else{
+    model <- lm( outcome ~ ., data=model_df)
+  }
+  return(model)
 }
-return(glmnet.fit)
-best_coef_indicator <- coef(glmnet.bestLambda.fit)[,1] != 0
-coefs_in_best_model <- rownames(coef(glmnet.bestLambda.fit))[best_coef_indicator]
+
+#Function +++++++++++++++++++++++++++++
+#Return many models fit using best lambda approach but fit with training data
+train_lambda_models <- function(opt, msi_binary, myX, myY){
+  train_models <- vector("list", opt$repeat_tests)
+  for(i in 1:opt$repeat_tests){
+    train <- sample(c(TRUE,FALSE), size=nrow(myX), replace=TRUE, prob=c(opt$p,1-opt$p))
+    trainX <- myX[train,]
+    trainY <- myY[train]
+    test_df <- data.frame(myY, myX)[!train]
+    names(test_df)[1] <- "outcome"
+    train_model <- best_lambda_model(opt, msi_binary, trainX, trainY)
+    test_predictions <- predict(train_model, newdata=test_df, type="response")
+    test_auc <- calculate_auc(myY[!train],test_predictions)
+    train_models[[i]] <- list(train_model, test_auc)
+  }
+}
+
+#Function +++++++++++++++++++++++++++++
+#Make comparison between best model using all data and models derived from training data
+
+# End of functions ++++++++++++++++++++
+# If user specified to run consensus step
+if( opt$consensus ){
+  parameter_counts <- consensus_parameters(opt, msi_binary, myX, myY)
+}
+
+# Find best model using penalized regression
+best_model <- best_lambda_model(opt, msi_binary, myX, myY)
+
+# Run testing section if specified
+train_models <- test_lambda_models(opt, msi_binary, myX, myY)
+
+
+
+
 
 ############PLOT THINGS
 
