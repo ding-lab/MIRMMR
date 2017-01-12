@@ -17,6 +17,8 @@ option_list <- list(
   make_option(c("--nfolds"), default=10, type="integer", help="Penalized module: Parameter nfolds used in glmnet::cv.glmnet, default=%default"),
   make_option(c("--repeats"), default=1000, type="integer", help="Penalized module: Number of times to repeat testing to determine optimal lambda in penalized module, default=%default"),
   make_option(c("--set_seed"), default=FALSE, type=NULL, help="Penalized module: Option to set seed before penalized module, seed can be set to any number or TRUE (1), default=%default"),
+  make_option(c("--train"), default=FALSE, type=NULL, help="Penalized module: Option to use a training set/test set approach to measure accuracy of best lambda approach, default=%default"),
+  make_option(c("--train_proportion"), default=0.8, type="double", help="Penalized module: With --train=TRUE, the proportion of samples to keep in the training set, default=%default"),
   make_option(c("--type_measure"), default="class", type="character", help="Penalized module: Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default")
 )
 
@@ -26,8 +28,11 @@ opt <- parse_args(OptionParser(usage="%prog -m MODULE -d DATA_FRAME -i MSI_STATU
 #Need these to refer to script directory MSImodel/modules
 #http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script
 
-#Sanity check on inputs
-source("helpers/sanity_checks.R")
+#Source these helper functions
+source("helper_functions.R")
+
+#Sanity check on the parameter inputs
+sanity_checks(opt)
 
 #Now run specified model
 source(paste0("modules/", opt$module, ".R"))
