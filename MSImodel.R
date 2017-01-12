@@ -13,13 +13,14 @@ option_list <- list(
   make_option(c("-l", "--lambda"), default="lambda.1se", type="character", help="Parameter lambda used in glmnet::cv.glmnet, default=\"%default\", options: lambda.1se, lambda.min"),
   make_option(c("-n", "--number_repetitions"), default=1000, type="integer", help="Number of times to repeat testing to determine optimal lambda in penalized module, default=%default"),
   make_option(c("-p", "--train_proportion"), default=0.8, type="double", help="Proportion of samples to retain in training set in penalized module, default=%default"),
-  make_option(c("-s", "--set_seed"), default=FALSE, type=NULL, help="Option to set seed before penalized module, seed can be set to any number, default=\"%default\""),
-  make_option(c("-t", "--type_measure"), default="class", type="character", help="Parameter type.measure used in glmnet::cv.glmnet, default=\"%default\", options: mse, deviance, mae, class, auc"),
+  make_option(c("-s", "--set_seed"), default=FALSE, type=NULL, help="Option to set seed before penalized module, seed can be set to any number or TRUE, default=%default"),
+  make_option(c("-t", "--type_measure"), default="class", type="character", help="Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default"),
   make_option(c("-v", "--verbose"), default=TRUE, type="logical", help="Print extra output along the way, default=%default"),
-  make_option(c("--plots"), default=FALSE, type="logical", help="Produce informative plots in the penalized module."),
-  make_option(c("--test"), default=FALSE, type="logical", help="Internal use: testing penalized module results."),
-  make_option(c("--time"), default=FALSE, type="logical", help="Internal use: report time to complete analysis."),
-  make_option(c("--consensus"), default=FALSE, type="logical", help="Internal use: consensus method to find best lambda in the penalized module. Only useful when used with --plots.")
+  make_option(c("--plots"), default=FALSE, type="logical", help="Produce informative plots in the penalized module, default=%default"),
+  make_option(c("--test"), default=FALSE, type="logical", help="Internal use: testing penalized module results, only when MSI score is binary, default=%default"),
+  make_option(c("--time"), default=FALSE, type="logical", help="Internal use: report time to complete analysis, default=%default"),
+  make_option(c("--consensus"), default=FALSE, type="logical", help="Internal use: consensus method to find best lambda in the penalized module, only useful when used with --plots, default=%default"),
+  make_option(c("--parallel"), default=FALSE, type="logical", help="Run penalized regression module in parallel, if possible, default=%default")
 )
 
 #retrieve command line arguments
@@ -101,6 +102,7 @@ if( opt$module == "penalized" ){
   if( !(opt$type_measure %in% c("mse", "deviance", "mae", "class", "auc")) ){
     error_message <- paste0(error_message, "Penalized regression parameter type_measuge (-t) must be mse, deviance, mae, class, or auc, default is class.\n")
   }
+  #TODO: IMPLEMENT MORE PARAMETER CHECKS
 }
 
 #First check if MSI score column is binary (logistic) or not (linear)
@@ -113,7 +115,7 @@ if( length(levels(droplevels(as.factor(df[,col]))))==2 ){
   msi_binary <- FALSE
 }
 else{
-  error_message <- paste0(error_message, "Whoa, MSI score column should have more than one level.\n")
+  error_message <- paste0(error_message, "MSI score column should have more than one level.\n")
 }
 
 #Now run specified model
