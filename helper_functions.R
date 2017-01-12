@@ -60,18 +60,46 @@ best_lambda_model <- function(opt, myX, myY){
 
 #Function +++++++++++++++++++++++++++++
 #Calculate points in a ROC curve
-roc <- function(){
+roc <- function( input ){
+  #Input data frame has two columns: truth, score
+  #Truth is what we assume to be true (like TRUE, FALSE)
+  #Score is a numeric value on a scale (like a probability between 0,1)
+  #Output is a data frame starting from 0,0 up to 1,1 of values in ROC curve
+  output <- matrix(NA, ncol(input)+1, 2)
+  output[i,] <- c(0,0)
+  scores <- sort(input[,2])
+  for(i in 1:ncol(input)){
+    threshold <- scores[i]
+    num_tp <- sum(input[,2] >= threshold & input[,1])
+    num_con_true <- sum(input[,1])
+    num_fp <- sum(input[,2] >= threshold & !input[,1])
+    num_con_false <- sum(!input[,1])
+    tp <- num_tp/num_con_true
+    fp <- num_fp/num_con_false
+    output[i+1,] <- c(tp, fp)
+  }
+  return(output)
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
 #Calculate area under a ROC curve (AUC)
-auc <- function(){
+auc <- function( roc ){
+  #Input ROC has two columns: tp, fp
+  cum_auc <- 0
+  for(i in 1:ncol(roc)-1 ){
+    rect <- (roc[i+1,1]-roc[i,1])*(roc[i,2])*(roc[i,2]) 
+    tri <- (1/2)*(roc[i+1,1]-roc[i,1])*(roc[i+1,2]-roc[i,2])
+    cum_auc <- cum_auc + rect + tri
+  }
+  return(cum_auc)
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
 #Plot a ROC curve
-plot_roc <- function(){
+plot_roc <- function( plot_df ){
+  #Function plots a ROC curve given (possible) multiple curves
+  #Input is a three column data frame (curve name, tp, fp)
 }
 #--------------------------------------
