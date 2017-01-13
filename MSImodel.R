@@ -39,7 +39,10 @@ sanity_checks(opt)
 col <- opt$msi_status
 #fdc is the column number of the first data column
 fdc <- opt$first_data_column
-
+#output directory and file prefix
+output_directory <- paste(strsplit(gsub("/+","/",opt$output_directory),"/")[[1]],collapse="/")
+file_prefix <- opt$output_prefix
+output_dir_prefix <- paste0(output_directory,"/",file_prefix)
 #Now run specified model
 source(paste0("modules/", opt$module, ".R"))
 
