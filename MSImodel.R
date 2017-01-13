@@ -34,6 +34,12 @@ source("modules/helper_functions.R")
 #Sanity check on the parameter inputs
 sanity_checks(opt)
 
+#df (set during sanity_checks) is the name of the input data frame
+#col is the column name referring to MSI status
+col <- opt$msi_status
+#fdc is the column number of the first data column
+fdc <- opt$first_data_column
+
 #Now run specified model
 source(paste0("modules/", opt$module, ".R"))
 
