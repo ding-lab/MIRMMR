@@ -29,7 +29,7 @@ opt <- parse_args(OptionParser(usage="%prog -m MODULE -d DATA_FRAME -i MSI_STATU
 #http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script
 
 #Source these helper functions
-source("helper_functions.R")
+source("modules/helper_functions.R")
 
 #Sanity check on the parameter inputs
 sanity_checks(opt)
