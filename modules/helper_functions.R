@@ -98,6 +98,13 @@ plot_roc <- function( plot_df ){
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
+#Test accuracy of model using test data
+test_accuracy <- function( model, newdata ){
+  
+}
+#--------------------------------------
+
+#Function +++++++++++++++++++++++++++++
 #Check inputs for sanity and correctness, exit if any problem
 sanity_checks <- function(opt){
   em <- function(old_message, new_message){
