@@ -90,19 +90,57 @@ auc <- function( roc ){
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
-#Plot a ROC curve
-plot_roc <- function( plot_df ){
-  #Function plots a ROC curve given (possible) multiple curves
-  #Input is a three column data frame (curve name, tp, fp)
+#Test accuracy of model using test data
+create_test_roc <- function( model, testX, testY ){
+  test_predictions <- predict( model, newdata=testX, type="response")
+  test_roc <- data.frame(truth=testY, score=test_predictions)
+  return( roc( test_roc ) )
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
-#Test accuracy of model using test data
-test_accuracy <- function( model, newdata ){
-  
+#Plot a ROC curve
+plot_roc <- function( plot_df ){
+  #Function plots a ROC curve given (possible) multiple curves
+  #Input is a three column data frame (method, fpr, tpr)
+  p <- ggplot(plot_df, aes(x=fpr, y=tpr, color=method))
+  p <- p + geom_line(size=1)
+  p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
+  p <- p + labs(x="False positive rate", y="True positive rate", title="ROC curve", color="Method")
+  pdf()
+  print(p)
+  dev.off()
 }
 #--------------------------------------
+
+### PLOTS ###
+
+#Function +++++++++++++++++++++++++++++
+#Plot predicted model value vs. MSI status
+plot_predicted <- function( plot_df ){
+  p <- ggplot(plot_df, aes())
+  p <- p + geom_violin()
+  p <- p + geom_jitter()
+  p <- p + labs(x="", y="", title="", color="")
+  pdf()
+  print(p)
+  dev.off()
+}
+#--------------------------------------
+
+#Function +++++++++++++++++++++++++++++
+#Plot consensus model vs. best model
+plot_consensus <- function(){
+  p <- ggplot(plot_df, aes())
+  p <- p + geom_point()
+  p <- p + labs(x="", y="", title="", color="")
+  pdf()
+  print(p)
+  dev.off()
+}
+#--------------------------------------
+
+### SANITY CHECKS ###
 
 #Function +++++++++++++++++++++++++++++
 #Check inputs for sanity and correctness, exit if any problem
@@ -111,7 +149,7 @@ sanity_checks <- function(opt){
     return( paste0(old_message, new_message, sep="\n") )
   }
   error_message <- NULL
-  #error_message <- em(error_message, "Error: ")
+  
   #Primary checks of module and data_frame
   #module
   list_of_modules <- c("compare", "penalized", "stepwise", "univariate")
