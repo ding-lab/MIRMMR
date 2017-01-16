@@ -47,6 +47,9 @@ if( opt$train ){
   write.table(output_df, file=paste0(output_dir_prefix,".penalized_test.txt"), quote=FALSE, sep="\t") 
 }
 
+# Save best model
+save(best_model, file=paste0(output_dir_prefix,".penalized_model.Robj"))
+
 ### PLOT THINGS ###
 
 #Plot predicted model value vs. MSI status
