@@ -98,6 +98,7 @@ create_test_roc <- function( model, testX, testY ){
 }
 #--------------------------------------
 
+### PLOTS ###
 #Function +++++++++++++++++++++++++++++
 #Plot a ROC curve
 plot_roc <- function( plot_df ){
@@ -112,8 +113,6 @@ plot_roc <- function( plot_df ){
   dev.off()
 }
 #--------------------------------------
-
-### PLOTS ###
 
 #Function +++++++++++++++++++++++++++++
 #Plot predicted model value vs. MSI status
@@ -130,10 +129,10 @@ plot_predicted <- function( plot_df ){
 
 #Function +++++++++++++++++++++++++++++
 #Plot consensus model vs. best model
-plot_consensus <- function(){
-  p <- ggplot(plot_df, aes())
-  p <- p + geom_point()
-  p <- p + labs(x="", y="", title="", color="")
+plot_consensus <- function( plot_df ){
+  p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
+  p <- p + geom_point(size=3)
+  p <- p + labs(x="Number of models", y="Model variable", title="Number of models each variable appeared in", color="Included in\n'best' model")
   pdf()
   print(p)
   dev.off()
