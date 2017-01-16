@@ -11,6 +11,7 @@ option_list <- list(
   make_option(c("-o", "--output_prefix"), default=NULL, type="character", help="Output file name prefix, must be specified"),
   make_option(c("-d", "--output_directory"), default="", type="character", help="Output directory, must be specified"),
   make_option(c("--plots"), default=FALSE, type="logical", help="Produce informative plots in the penalized module, default=%default"),
+  make_option(c("--group"), default=NULL, type="character", help="Column name referring to a group identifier (e.g. cancer type) used in plotting, default=%default"),
   make_option(c("--alpha"), default=0.9, type="double", help="Penalized module: Parameter alpha used in glmnet::glmnet, default=%default"),
   make_option(c("--consensus"), default=FALSE, type="logical", help="Penalized module: Use consensus method in additional to best lambda method to find set of coefficients that appear in most models, only useful when used with --plots, default=%default"),
   make_option(c("--lambda"), default="lambda.1se", type="character", help="Penalized module: Parameter lambda used in glmnet::cv.glmnet, default=\"%default\", options: lambda.1se, lambda.min"),
@@ -25,11 +26,8 @@ option_list <- list(
 #Retrieve command line arguments
 opt <- parse_args(OptionParser(usage="%prog -m MODULE -d DATA_FRAME -i MSI_STATUS -c FIRST_DATA_COLUMN -o OUTPUT_PREFIX -d OUTPUT_DIRECTORY [options]\n\nAssumptions:\n1. The data frame has meta information columns (e.g. sample name, cancer type, MSI score)\n2. Followed by data columns (i.e. predictors in regression models)\n3. And that the input data frame has column headers.", option_list=option_list))
 
-#Need these to refer to script directory MSImodel/modules
-#http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script
-
 #Source these helper functions
-source("modules/helper_functions.R")
+source("modules/helper_functions.R",chdir=TRUE)
 
 #Sanity check on the parameter inputs
 sanity_checks(opt)
@@ -44,5 +42,5 @@ output_directory <- paste(strsplit(gsub("/+","/",opt$output_directory),"/")[[1]]
 file_prefix <- opt$output_prefix
 output_dir_prefix <- paste0(output_directory,"/",file_prefix)
 #Now run specified model
-source(paste0("modules/", opt$module, ".R"))
+source(paste0("modules/", opt$module, ".R"),chdir=TRUE)
 

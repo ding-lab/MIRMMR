@@ -108,7 +108,7 @@ plot_roc <- function( plot_df ){
   p <- p + geom_line(size=1)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
   p <- p + labs(x="False positive rate", y="True positive rate", title="ROC curve", color="Method")
-  pdf()
+  pdf(paste0(output_dir_prefix,".roc_curve.pdf),10,10)
   print(p)
   dev.off()
 }
@@ -121,7 +121,7 @@ plot_predicted <- function( plot_df ){
   p <- p + geom_violin()
   p <- p + geom_jitter()
   p <- p + labs(x="", y="", title="", color="")
-  pdf()
+  pdf(paste0(output_dir_prefix,".penalized_predicted.pdf",10,10))
   print(p)
   dev.off()
 }
@@ -133,7 +133,7 @@ plot_consensus <- function( plot_df ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
   p <- p + labs(x="Number of models", y="Model variable", title="Number of models each variable appeared in", color="Included in\n'best' model")
-  pdf()
+  pdf(paste0(output_dir_prefix,".penalized_consensus.pdf",10,10))
   print(p)
   dev.off()
 }
