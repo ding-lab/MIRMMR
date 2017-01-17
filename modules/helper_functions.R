@@ -46,7 +46,7 @@ best_lambda_model <- function(opt, myX, myY){
   # Fit a glm model using coefficients from above
   model_df <- data.frame(myY, myX[, names(myX) %in% coefs_in_best_model])
   names(model_df)[1] <- "outcome"
-  model <- glm( outcome ~ ., data=model_df, family=binomial)
+  model <- glm( outcome ~ ., data=model_df, family="binomial")
   return(model)
 }
 #--------------------------------------
@@ -108,7 +108,7 @@ plot_roc <- function( plot_df, user_title){
   p <- p + geom_line(size=1)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
   p <- p + labs(x="False positive rate", y="True positive rate", title=user_title, color="Method")
-  pdf(paste0(output_dir_prefix,".roc_curve.pdf),10,10)
+  pdf(paste0(output_dir_prefix,".roc_curve.pdf"),10,10)
   print(p)
   dev.off()
 }
@@ -117,10 +117,10 @@ plot_roc <- function( plot_df, user_title){
 #Function +++++++++++++++++++++++++++++
 #Plot predicted model value vs. MSI status
 plot_predicted <- function( plot_df ){
-  p <- ggplot(plot_df, aes())
+  p <- ggplot(plot_df, aes(x=col, y=predicted))
   p <- p + geom_violin()
-  p <- p + geom_jitter()
-  p <- p + labs(x="", y="", title="", color="")
+  p <- p + geom_jitter(width=0.3,height=0)
+  p <- p + labs(x="MSI status", y="Fitted probability of MSI status", title="Penalized regression probability of MSI staatus", color=group)
   pdf(paste0(output_dir_prefix,".penalized_predicted.pdf",10,10))
   print(p)
   dev.off()
