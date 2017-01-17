@@ -198,6 +198,10 @@ sanity_checks <- function(opt){
   if( is.null(opt$output_directory) ){
     error_message <- em(error_message, "Error: Output file directory (-d) must be specified.")
   }
+  #overwrite
+  if( !is.logical(opt$overwrite) ){
+    error_message <- em(error_message, "Error: Overwrite (--overwrite) must be logical TRUE/FALSE, default is FALSE")
+  }
   #plots
   if( !is.logical(opt$plots) ){
     error_message <- em(error_message, "Error: Plots (--plots) must be logical TRUE/FALSE, default is FALSE.")
