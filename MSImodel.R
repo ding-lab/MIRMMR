@@ -43,41 +43,39 @@ file_prefix <- opt$output_prefix
 output_dir_prefix <- paste0(output_directory,"/",file_prefix)
 #For the specified model, see if the output files already exist and exit if --overwrite=FALSE
 if( !opt$overwrite ){
+  overwrite_message <- NULL
   if( opt$module == "univariate" ){
     if( file.exists(paste0(output_dir_prefix,".univariate_summary.txt")) ){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".univariate_summary.txt"," file already exists, set --overwrite=TRUE to overwrite.")
     }
     if( file.exists(paste0(output_dir_prefix,".univariate_models.Robj")) ){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".univariate_models.Robj"," file already exists, set --overwrite=TRUE to overwrite.")
     }
   } else if( opt$module == "stepwise" ){
     if( file.exists(paste0(output_dir_prefix,".stepwise_model_summary.txt")) ){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".stepwise_model_summary.txt"," file already exists, set --overwrite=TRUE to overwrite.")      
     }
     if( file.exists(paste0(output_dir_prefix,".stepwise_model.Robj")) ){
-      exit("")
-    }
-    if( file.exists(paste0(output_dir_prefix,".stepwise_roc_curve.pdf")) ){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".stepwise_model.Robj"," file already exists, set --overwrite=TRUE to overwrite.")
     }
   } else if( opt$module == "penalized" ){
     if( opt$train & file.exists(paste0(output_dir_prefix,".penalized_test.txt")){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".penalized_test.txt"," file already exists, set --overwrite=TRUE to overwrite.")
     }
     if( opt$consensus & file.exists(paste0(output_dir_prefix,".penalized_consensus.pdf")){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".penalized_consensus.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
     }
     if( file.exists(paste0(output_dir_prefix,".penalized_predicted.pdf")) ){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".penalized_predicted.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
     }
     if( file.exists(paste0(output_dir_prefix,".penalized_model.Robj")) ){
-      exit("")
-    }
-    if( file.exists(paste0(output_dir_prefix,".penalized_roc_curve.pdf")) ){
-      exit("")
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".penalized_model.Robj"," file already exists, set --overwrite=TRUE to overwrite.")
     }
   } else if( opt$module == "compare" ){
     #TODO fill this in
+  }
+  if( !is.null(overwrite_message) ){
+    stop(overwrite_message)
   } 
 }
 
