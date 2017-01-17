@@ -52,6 +52,7 @@ fdc <- opt$first_data_column
 output_directory <- paste(strsplit(gsub("/+","/",opt$output_directory),"/")[[1]],collapse="/")
 file_prefix <- opt$output_prefix
 output_dir_prefix <- paste0(output_directory,"/",file_prefix)
+
 #For the specified model, see if the output files already exist and exit if --overwrite=FALSE
 if( !opt$overwrite ){
   overwrite_message <- NULL

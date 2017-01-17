@@ -57,7 +57,7 @@ roc <- function( input ){
   #Score is a numeric value on a scale (like a probability between 0,1)
   #Output is a data frame starting from 0,0 up to 1,1 of values in ROC curve
   output <- matrix(NA, ncol(input)+1, 2)
-  output[i,] <- c(0,0)
+  output[1,] <- c(0,0)
   scores <- sort(input[,2])
   for(i in 1:ncol(input)){
     threshold <- scores[i]
