@@ -4,7 +4,6 @@
 #Track how many times each variable appears in models
 consensus_parameters <- function(opt, myX, myY){
   variables_in_model <- vector("list", opt$repeats)
-  results[[p]] <- model
   for(i in 1:opt$repeats){
     cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
     variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0]
@@ -35,7 +34,7 @@ best_lambda_model <- function(opt, myX, myY){
   bestlambda = lambdas[bestindex,1]
 
   # and now run glmnet once more with the best lambda
-  glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$a)
+  glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$alpha)
 
   # Determine the coeffients in model derived from best lambda
   best_coef_indicator <- coef(glmnet.fit)[,1] != 0
@@ -118,8 +117,8 @@ plot_predicted <- function( plot_df ){
   p <- ggplot(plot_df, aes(x=col, y=predicted))
   p <- p + geom_violin()
   p <- p + geom_jitter(width=0.3,height=0)
-  p <- p + labs(x="MSI status", y="Fitted probability of MSI status", title="Penalized regression probability of MSI staatus", color=group)
-  pdf(paste0(output_dir_prefix,".penalized_predicted.pdf",10,10))
+  p <- p + labs(x="MSI status", y="Fitted probability of MSI status", title="Penalized regression probability of MSI staatus", color=opt$group)
+  pdf(paste0(output_dir_prefix,".penalized_predicted.pdf"),10,10)
   print(p)
   dev.off()
 }
@@ -131,7 +130,7 @@ plot_consensus <- function( plot_df ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
   p <- p + labs(x="Number of models", y="Model variable", title="Number of models each variable appeared in", color="Included in\n'best' model")
-  pdf(paste0(output_dir_prefix,".penalized_consensus.pdf",10,10))
+  pdf(paste0(output_dir_prefix,".penalized_consensus.pdf"),10,10)
   print(p)
   dev.off()
 }
@@ -205,10 +204,6 @@ sanity_checks <- function(opt){
   if( !is.logical(opt$overwrite) ){
     error_message <- em(error_message, "Error: Overwrite (--overwrite) must be logical TRUE/FALSE, default is FALSE")
   }
-  #plots
-  if( !is.logical(opt$plots) ){
-    error_message <- em(error_message, "Error: Plots (--plots) must be logical TRUE/FALSE, default is FALSE.")
-  }
   #Exit if error_message not NULL
   if( !is.null(error_message) ){
     stop(error_message)
@@ -216,12 +211,20 @@ sanity_checks <- function(opt){
 
   #Tertiary chcks of penalized module options (alpha, consensus, lambda, nfolds, repeats, set_seed, train, train_proportion, type_measure)
   if( opt$module == "penalized" ){
+    #plots
+    if( !is.logical(opt$plots) ){
+      error_message <- em(error_message, "Error: Plots (--plots) must be logical TRUE/FALSE, default is FALSE.")
+    }
+    #group
+    if( !is.null(opt$group) && !(opt$group %in% names(df)) ){
+      error_message <- em(error_message, "Error: Group (--group) is not found within the column names of the input data frame.")
+    }
     #alpha
-    if( !is.numeric(opt$alpha) || opt$alpha < 0 | opt$alpha > 1 ){
+    if( is.na(opt$alpha) || opt$alpha < 0 | opt$alpha > 1 ){
       error_message <- em(error_message, "Error: Alpha (--alpha) must be a double beteween 0 and 1, default=0.9.")
     }
     #consensus
-    if( !is.logical(opt$consensus) ){
+    if( is.na(opt$consensus) ){
       error_message <- em(error_message, "Error: Consensus (--consensus) must be logical TRUE/FALSE, default is FALSE.")
     }
     #lambda
@@ -229,23 +232,23 @@ sanity_checks <- function(opt){
       error_message <- em(error_message, "Error: Lambda (--lambda) must be one of \"lambda.1se\" or \"lambda.min\", default is \"lambda.1se\".")
     }
     #nfolds
-    if( !is.numeric(opt$nfolds) || opt$nfolds!=round(opt$nfolds) | opt$nfolds < 1 | opt$nfolds > nrow(df) ){
+    if( is.na(opt$nfolds) || opt$nfolds!=round(opt$nfolds) | opt$nfolds < 1 | opt$nfolds > nrow(df) ){
       error_message <- em(error_message, "Error: Number of folds (--nfolds) must be an integer between 1 and the number of samples in the input data frame, default is 10.")
     } 
     #repeats
-    if( !is.numeric(opt$repeats) || opt$repeats!=round(opt$repeats) | opt$repeats < 1){
+    if( is.na(opt$repeats) || opt$repeats!=round(opt$repeats) | opt$repeats < 1){
       error_message <- em(error_message, "Error: Number of repeats (--repeats) must be a positive integer, default is 1000.")
     }
     #set_seed
-    if( !(is.logical(opt$set_seed) | is.numeric(opt$set_seed)) ){
-      error_message <- em(error_message, "Error: Random seed (--seed) must be FALSE, TRUE, or any double, default is FALSE.")
+    if( is.na(opt$set_seed) ){
+      error_message <- em(error_message, "Error: Random seed (--seed) must be a number, default is 0 (not set).")
     }
     #train
-    if( !is.logical(opt$train) ){
+    if( is.na(opt$train) ){
       error_message <- em(error_message, "Error: Train option (--train) must be logical TRUE or FALSE, default is FALSE.")
     }
     #train_proportion
-    if( !is.numeric(opt$train_proportion) || opt$train_proportion < 0 | opt$train_proportion > 1 ){
+    if( is.na(opt$train_proportion) || opt$train_proportion < 0 | opt$train_proportion > 1 ){
       error_message <- em(error_message, "Error: Train proportion (--train_proportion) must be a double between 0 and 1, default is 0.8.")
     }
     #type_measure

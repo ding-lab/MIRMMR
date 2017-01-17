@@ -1,11 +1,11 @@
 #Module performs penalized regression
 
 #Set seed for repeatable results (cross-validation approach is stochastic)
-if(opt$s != FALSE){
-  set.seed(opt$s)
+if(opt$set_seed != FALSE){
+  set.seed(opt$set_seed)
 }
 
-suppressPackageStartupMessage(library(glmnet))
+suppressPackageStartupMessages(library(glmnet))
 
 #Data to be used
 if( opt$train ){
@@ -32,32 +32,34 @@ best_model <- best_lambda_model(opt, trainX, trainY)
 
 # Use test data to evaluate training model
 if( opt$train ){
-  test_roc <- create_test_roc(best_model, testX, testY)
+  test_roc <- create_test_roc(best_model, as.data.frame(testX), testY)
   test_auc <- auc( test_roc )
-  parameter_names <- c("AUC","(Intercept)", names(df[,fdc:ncol(df)]]))
+  parameter_names <- c("AUC","(Intercept)", names(df[,fdc:ncol(df)]))
   beta_values <- c(test_auc, rep(0,length(parameter_names)))
   count <- 1
   for(param in parameter_names){
     count <- count + 1
     if( param %in% names(best_model$coefficients) ){
-      beta_values[i] <- best_model$coefficients[[param]]
+      beta_values[count] <- best_model$coefficients[[param]]
     }
   }
-  output_df <- data.frame(value=beta_values)
-  write.table(output_df, file=paste0(output_dir_prefix,".penalized_test.txt"), quote=FALSE, sep="\t") 
+  output_df <- data.frame(parameter=parameter_names,value=beta_values)
+  write.table(output_df, file=paste0(output_dir_prefix,".penalized_test.txt"), quote=FALSE, sep="\t", row.names=FALSE) 
 }
 
 # Save best model
 save(best_model, file=paste0(output_dir_prefix,".penalized_model.Robj"))
 
 ### PLOT THINGS ###
+if( opt$plots ){
+  suppressPackageStartupMessages(library(ggplot2))
+  #Plot predicted model value vs. MSI status
+  plot_df <- data.frame( trainX, predicted=best_model$fitted.values )
+  plot_predicted( plot_df )
 
-#Plot predicted model value vs. MSI status
-plot_df <- data.frame( trainX, predicted=best_model$fitted.values )
-plot_predicted( plot_df )
-
-#Plot consensus model vs. best model 
-if(opt$consensus){
-  plot_df <- data.frame(parameter_counts, in_best_model=(parameter_counts$Parameter %in% names(best_model$coefficients)))
-  plot_consensus( plot_df )
+  #Plot consensus model vs. best model 
+  if(opt$consensus){
+    plot_df <- data.frame(parameter_counts, in_best_model=(parameter_counts$Parameter %in% names(best_model$coefficients)))
+    plot_consensus( plot_df )
+  }
 }
