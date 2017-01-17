@@ -9,9 +9,20 @@ names(results) <- params
 for( p in params ){
   model <- NULL
   #Run univariate logistic or linear regression
-  model <- glm( df[,col] ~ df[,p], data=df, family="logistic")
-  results[[p]] <- summary(model)
+  #Col is the MSI status column name
+  #p is the parameter of interest column name
+  results[[p]] <- glm( df[,col] ~ df[,p], data=df, family=binomial)
 }
 
-#Write results to output 
-return(results)
+#Write summary table
+output <- matrix(NA,length(params)+1,9)
+output[1,] <- c("Parameter",paste0("Intercept",c("_Estimate","_Std._Error", "_z_value", "_P(>|z|)")),paste0("Parameter",c("_Estimate","_Std._Error", "_z_value", "_P(>|z|)")))
+count <- 1
+for( p in params ){
+  count <- count + 1
+  output[count,] <- c(summary(results[[p]])$coefficients[1,],summary(results[[p]])$coefficients[2,])
+}
+write.table(output,file=paste0(output_dir_prefix,".univariate_summary.txt"),quote=FALSE, sep="\t", row.names=FALSE, col.names=FALSE)
+
+#Write models to output 
+save(results, file=paste0(output_dir_prefix,".univariate_models.Robj")
