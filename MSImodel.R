@@ -10,7 +10,7 @@ option_list <- list(
   make_option(c("-c", "--first_data_column"), default=NULL, type="integer", help="Column number referring to first parameter in data frame, assuming all higher columns are also parameters, must be specified"),
   make_option(c("-o", "--output_prefix"), default=NULL, type="character", help="Output file name prefix, must be specified"),
   make_option(c("-d", "--output_directory"), default="", type="character", help="Output directory, must be specified"),
-  make_option(c("--overwrite"), default=FALSE, type="logical", help="Prevent overwriting existing files, turn off overwrite protection with TRUE, defaul%default."
+  make_option(c("--overwrite"), default=FALSE, type="logical", help="Prevent overwriting existing files, turn off overwrite protection with TRUE, default=%default."
   make_option(c("--plots"), default=FALSE, type="logical", help="Produce informative plots in the penalized module, default=%default"),
   make_option(c("--group"), default=NULL, type="character", help="Column name referring to a group identifier (e.g. cancer type) used in plotting, default=%default"),
   make_option(c("--alpha"), default=0.9, type="double", help="Penalized module: Parameter alpha used in glmnet::glmnet, default=%default"),
