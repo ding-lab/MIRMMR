@@ -101,13 +101,13 @@ create_test_roc <- function( model, testX, testY ){
 ### PLOTS ###
 #Function +++++++++++++++++++++++++++++
 #Plot a ROC curve
-plot_roc <- function( plot_df ){
+plot_roc <- function( plot_df, user_title){
   #Function plots a ROC curve given (possible) multiple curves
   #Input is a three column data frame (method, fpr, tpr)
   p <- ggplot(plot_df, aes(x=fpr, y=tpr, color=method))
   p <- p + geom_line(size=1)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
-  p <- p + labs(x="False positive rate", y="True positive rate", title="ROC curve", color="Method")
+  p <- p + labs(x="False positive rate", y="True positive rate", title=user_title, color="Method")
   pdf(paste0(output_dir_prefix,".roc_curve.pdf),10,10)
   print(p)
   dev.off()
