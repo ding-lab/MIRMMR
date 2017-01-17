@@ -151,18 +151,18 @@ sanity_checks <- function(opt){
   #module
   list_of_modules <- c("compare", "penalized", "stepwise", "univariate")
   if( !(opt$module %in% list_of_modules) ){
-    error_message <- em(error_message, paste0("Error: module (-m) must be one of ", paste(list_of_modules, collapse=" "),"."))
+    error_message <- em(error_message, paste0("Error: module (-m) must be one of ", paste(list_of_modules, collapse=", "),"."))
   }
   if( !is.null(error_message) ){
     stop(error_message)
   }
   #data_frame
   if( is.null(opt$data_frame) ){
-    error_message <- em(error_message, "Error: data frame (-d) is NULL and must be specified.")
+    error_message <- em(error_message, "Error: data frame (-f) is NULL and must be specified.")
   } else if( !(file.exists(opt$data_frame)) ){
-    error_message <- em(error_message, "Error: data frame (-d) file does not exist.")
-  } else if( !(file.access(opt$data_frame, mode=4)) ){
-    errro_message <- em(error_message, "Error: data frame (-d) file is not readable.")
+    error_message <- em(error_message, "Error: data frame (-f) file does not exist.")
+  } else if( file.access(opt$data_frame, mode=4)!=0 ){
+    error_message <- em(error_message, "Error: data frame (-f) file is not readable.")
   } else if( TRUE ){
     default_warn <- options()$warn
     options(warn=2)
@@ -182,12 +182,15 @@ sanity_checks <- function(opt){
   } else if( length(levels(droplevels(as.factor(df[,opt$msi_status]))))!=2 ){
     error_message <- em(error_message, "Error: MSI status column (-i) may only have two levels.")
   } 
+  if( !is.null(error_message) ){
+    stop(error_message)
+  }
   #first_data_column
   if( is.null(opt$first_data_column) ){
     error_message <- em(error_message, "Error: Number of first data column (-c) must be specified.")
-  } else if( !is.double(opt$c) || opt$c!=round(opt$c) ){
+  } else if( !is.numeric(opt$first_data_column) || opt$first_data_column!=round(opt$first_data_column) ){
     error_message <- em(error_message, "Error: Number of first data column (-c) must be an integer.")
-  } else if( opt$c >= ncol(df) | opt$c <= which(names(df)==opt$msi_status ){
+  } else if( opt$first_data_column >= ncol(df) | opt$first_data_column <= which(names(df)==opt$msi_status )){
     error_message <- em(error_message, "Error: Number of first data column (-c) must be greater than the column number of the MSI status column and must be less than number of columns of the input data frame.")
   }
   #output_prefix
@@ -214,7 +217,7 @@ sanity_checks <- function(opt){
   #Tertiary chcks of penalized module options (alpha, consensus, lambda, nfolds, repeats, set_seed, train, train_proportion, type_measure)
   if( opt$module == "penalized" ){
     #alpha
-    if( !is.double(opt$alpha) || opt$alpha < 0 | opt$alpha > 1 ){
+    if( !is.numeric(opt$alpha) || opt$alpha < 0 | opt$alpha > 1 ){
       error_message <- em(error_message, "Error: Alpha (--alpha) must be a double beteween 0 and 1, default=0.9.")
     }
     #consensus
@@ -226,15 +229,15 @@ sanity_checks <- function(opt){
       error_message <- em(error_message, "Error: Lambda (--lambda) must be one of \"lambda.1se\" or \"lambda.min\", default is \"lambda.1se\".")
     }
     #nfolds
-    if( !is.double(opt$nfolds) || opt$nfolds!=round(opt$nfolds) | opt$nfolds < 1 | opt$nfolds > nrow(df) ){
+    if( !is.numeric(opt$nfolds) || opt$nfolds!=round(opt$nfolds) | opt$nfolds < 1 | opt$nfolds > nrow(df) ){
       error_message <- em(error_message, "Error: Number of folds (--nfolds) must be an integer between 1 and the number of samples in the input data frame, default is 10.")
     } 
     #repeats
-    if( !is.double(opt$repeats) || opt$repeats!=round(opt$repeats) | opt$repeats < 1){
+    if( !is.numeric(opt$repeats) || opt$repeats!=round(opt$repeats) | opt$repeats < 1){
       error_message <- em(error_message, "Error: Number of repeats (--repeats) must be a positive integer, default is 1000.")
     }
     #set_seed
-    if( !(is.logical(opt$set_seed) | is.double(opt$set_seed)) ){
+    if( !(is.logical(opt$set_seed) | is.numeric(opt$set_seed)) ){
       error_message <- em(error_message, "Error: Random seed (--seed) must be FALSE, TRUE, or any double, default is FALSE.")
     }
     #train
@@ -242,7 +245,7 @@ sanity_checks <- function(opt){
       error_message <- em(error_message, "Error: Train option (--train) must be logical TRUE or FALSE, default is FALSE.")
     }
     #train_proportion
-    if( !is.double(opt$train_proportion) || opt$train_proportion < 0 | opt$train_proportion > 1 ){
+    if( !is.numeric(opt$train_proportion) || opt$train_proportion < 0 | opt$train_proportion > 1 ){
       error_message <- em(error_message, "Error: Train proportion (--train_proportion) must be a double between 0 and 1, default is 0.8.")
     }
     #type_measure

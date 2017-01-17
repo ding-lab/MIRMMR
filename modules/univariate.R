@@ -20,9 +20,9 @@ output[1,] <- c("Parameter",paste0("Intercept",c("_Estimate","_Std._Error", "_z_
 count <- 1
 for( p in params ){
   count <- count + 1
-  output[count,] <- c(summary(results[[p]])$coefficients[1,],summary(results[[p]])$coefficients[2,])
+  output[count,] <- c(p,summary(results[[p]])$coefficients[1,],summary(results[[p]])$coefficients[2,])
 }
 write.table(output,file=paste0(output_dir_prefix,".univariate_summary.txt"),quote=FALSE, sep="\t", row.names=FALSE, col.names=FALSE)
 
 #Write models to output 
-save(results, file=paste0(output_dir_prefix,".univariate_models.Robj")
+save(results, file=paste0(output_dir_prefix,".univariate_models.Robj"))
