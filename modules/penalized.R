@@ -61,4 +61,3 @@ if(opt$consensus){
   plot_df <- data.frame(parameter_counts, in_best_model=(parameter_counts$Parameter %in% names(best_model$coefficients)))
   plot_consensus( plot_df )
 }
-

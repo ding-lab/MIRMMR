@@ -21,9 +21,6 @@ roc_df <- roc( data.frame(df[,col], probs) )
 #AUC
 auc <- auc( roc_df )
 
-#Plot ROC
-p <- plot_roc( roc_df, user_title="ROC curve of stepwise regression model")
-
 #Write model summary to output
 write(summary(stepwise_model), file=paste0(output_dir_prefix,".stepwise_model_summary.txt"))
 
