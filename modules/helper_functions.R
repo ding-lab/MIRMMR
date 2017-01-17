@@ -3,11 +3,11 @@
 #Function +++++++++++++++++++++++++++++
 #Track how many times each variable appears in models
 consensus_parameters <- function(opt, myX, myY){
-  #TODO update opt parameter names
-  variables_in_model <- vector("list", opt$n)
-  for(i in 1:opt$n){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$f, family="binomial", type.measure=opt$t, alpha=opt$a)
-    variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$l))[coef(cvfit, s=opt$l)[,1] != 0]
+  variables_in_model <- vector("list", opt$repeats)
+  results[[p]] <- model
+  for(i in 1:opt$repeats){
+    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
+    variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0]
   }
   variables_in_model_df <- data.frame(table(unlist(variables_in_model)))
   names(variables_in_model_df) <- c("Parameter","Count")
@@ -20,10 +20,9 @@ consensus_parameters <- function(opt, myX, myY){
 #Modified from stackexchange user 'Sideshow Bob', answer from 2016/03/31. Thanks!
 #http://stats.stackexchange.com/questions/97777/variablity-in-cv-glmnet-results/173895#173895
 best_lambda_model <- function(opt, myX, myY){
-  #TODO update opt parameter names
   lambdas = NULL
-  for (i in 1:opt$n){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$f, family="binomial", type.measure=opt$t, alpha=opt$a)
+  for (i in 1:opt$repeats){
+    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$repeats, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
     #TODO: optimize this with prespecified data frame or list structure for lambdas
     errors <- data.frame(cvfit$lambda,cvfit$cvm)
     lambdas <- rbind(lambdas,errors)
