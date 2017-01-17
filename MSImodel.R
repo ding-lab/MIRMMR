@@ -41,6 +41,46 @@ fdc <- opt$first_data_column
 output_directory <- paste(strsplit(gsub("/+","/",opt$output_directory),"/")[[1]],collapse="/")
 file_prefix <- opt$output_prefix
 output_dir_prefix <- paste0(output_directory,"/",file_prefix)
+#For the specified model, see if the output files already exist and exit if --overwrite=FALSE
+if( !opt$overwrite ){
+  if( opt$module == "univariate" ){
+    if( file.exists(paste0(output_dir_prefix,".univariate_summary.txt")) ){
+      exit("")
+    }
+    if( file.exists(paste0(output_dir_prefix,".univariate_models.Robj")) ){
+      exit("")
+    }
+  } else if( opt$module == "stepwise" ){
+    if( file.exists(paste0(output_dir_prefix,".stepwise_model_summary.txt")) ){
+      exit("")
+    }
+    if( file.exists(paste0(output_dir_prefix,".stepwise_model.Robj")) ){
+      exit("")
+    }
+    if( file.exists(paste0(output_dir_prefix,".stepwise_roc_curve.pdf")) ){
+      exit("")
+    }
+  } else if( opt$module == "penalized" ){
+    if( opt$train & file.exists(paste0(output_dir_prefix,".penalized_test.txt")){
+      exit("")
+    }
+    if( opt$consensus & file.exists(paste0(output_dir_prefix,".penalized_consensus.pdf")){
+      exit("")
+    }
+    if( file.exists(paste0(output_dir_prefix,".penalized_predicted.pdf")) ){
+      exit("")
+    }
+    if( file.exists(paste0(output_dir_prefix,".penalized_model.Robj")) ){
+      exit("")
+    }
+    if( file.exists(paste0(output_dir_prefix,".penalized_roc_curve.pdf")) ){
+      exit("")
+    }
+  } else if( opt$module == "compare" ){
+    #TODO fill this in
+  } 
+}
+
 #Now run specified model
 source(paste0("modules/", opt$module, ".R"),chdir=TRUE)
 
