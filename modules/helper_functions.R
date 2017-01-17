@@ -23,7 +23,6 @@ best_lambda_model <- function(opt, myX, myY){
   lambdas = NULL
   for (i in 1:opt$repeats){
     cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$repeats, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
-    #TODO: optimize this with prespecified data frame or list structure for lambdas
     errors <- data.frame(cvfit$lambda,cvfit$cvm)
     lambdas <- rbind(lambdas,errors)
   }
@@ -199,7 +198,6 @@ sanity_checks <- function(opt){
   if( is.null(opt$output_directory) ){
     error_message <- em(error_message, "Error: Output file directory (-d) must be specified.")
   }
-  #TODO check if file exists and will be overwritten if overwrite=FALSE
   #plots
   if( !is.logical(opt$plots) ){
     error_message <- em(error_message, "Error: Plots (--plots) must be logical TRUE/FALSE, default is FALSE.")
