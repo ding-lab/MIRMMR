@@ -24,12 +24,20 @@ if( opt$train ){
 
 # If user specified to run consensus step
 if( opt$consensus ){
-  parameter_counts <- consensus_parameters(opt, trainX, trainY)
+  p1 <- proc.time(); print("Start consensus")
+  #parameter_counts <- consensus_parameters(opt, trainX, trainY)
+  parameter_counts <- consensus_parameters_replicate(opt, trainX, trainY)
+  print("End consensus")
+  print(proc.time()-p1)
 }
 
-# Find best model using penalized regression
-best_model <- best_lambda_model(opt, trainX, trainY)
 
+# Find best model using penalized regression
+p3 <- proc.time(); print("Start best lambda")
+#best_model <- best_lambda_model(opt, trainX, trainY)
+best_model <- best_lambda_model_replicate(opt, trainX, trainY)
+print("End best lambda")
+print(proc.time()-p3)
 # Use test data to evaluate training model
 if( opt$train ){
   test_roc <- create_test_roc(best_model, as.data.frame(testX), testY)
