@@ -19,10 +19,13 @@ MSI statistical model building using methylation and mutation data
       2. Run existing methods
       3. ROC curves
       4. Discordant pairs
-    5. Debugging
+    5. Predict
+      1. Model.Robj and data.frame input
+      2. Output scores
+    6. Debugging
       1. ~~Univariate~~
       2. ~~Stepwise~~
-      3. Penalized
+      3. ~~Penalized~~
       4. Compare
       5. Input/output
   3. Github documentation

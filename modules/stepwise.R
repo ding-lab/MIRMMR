@@ -26,7 +26,6 @@ best_model <- glm(all_models$formula, data=df, family=binomial)
 sink(paste0(output_dir_prefix,".stepwise_model_summary.txt"))
 print(summary(best_model))
 sink()
-#lapply(summary(best_model), write, paste0(output_dir_prefix,".stepwise_model_summary.txt"), append=TRUE, ncolumns=10)
 
 #Save model in .Robj file
 save(best_model, file=paste0(output_dir_prefix,".stepwise_model.Robj"))

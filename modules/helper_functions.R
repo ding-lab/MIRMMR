@@ -5,6 +5,7 @@
 consensus_parameters <- function(opt, myX, myY){
   variables_in_model <- vector("list", opt$repeats)
   for(i in 1:opt$repeats){
+    print(paste0("consensus ",i))
     cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
     variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0]
   }
@@ -21,6 +22,7 @@ consensus_parameters <- function(opt, myX, myY){
 best_lambda_model <- function(opt, myX, myY){
   lambdas = NULL
   for (i in 1:opt$repeats){
+    print(paste0("glmnet ",i))
     cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$repeats, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
     errors <- data.frame(cvfit$lambda,cvfit$cvm)
     lambdas <- rbind(lambdas,errors)
