@@ -3,6 +3,9 @@
 #Function +++++++++++++++++++++++++++++
 #Track how many times each variable appears in models
 consensus_parameters <- function(opt, myX, myY){
+  #TODO parallel https://www.r-bloggers.com/how-to-go-parallel-in-r-basics-tips/
+  #http://adv-r.had.co.nz/Profiling.html#parallelise
+  #https://cran.r-project.org/web/views/HighPerformanceComputing.html
   variables_in_model <- vector("list", opt$repeats)
   for(i in 1:opt$repeats){
     print(paste0("consensus ",i))
@@ -16,10 +19,27 @@ consensus_parameters <- function(opt, myX, myY){
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
+consensus_parameters_replicate <- function(opt, myX, myY){
+  get_cvglmnet_variables <- function(opt, myX, myY){
+    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
+    return(row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0])
+  }
+  variables_in_model <- replicate(opt$repeats, get_cvglmnet_variables(opt, myX, myY))
+  variables_in_model_df <- data.frame(table(unlist(variables_in_model)
+  names(variables_in_model_df) <- c("Parameter","Count")
+  return(variables_in_model_df)
+}
+#--------------------------------------
+
+
+#Function +++++++++++++++++++++++++++++
 #Find best lambda and return model with best lambda coefficients 
 #Modified from stackexchange user 'Sideshow Bob', answer from 2016/03/31. Thanks!
 #http://stats.stackexchange.com/questions/97777/variablity-in-cv-glmnet-results/173895#173895
 best_lambda_model <- function(opt, myX, myY){
+  #TODO parallel https://www.r-bloggers.com/how-to-go-parallel-in-r-basics-tips/
+  #http://adv-r.had.co.nz/Profiling.html#parallelise
+  #https://cran.r-project.org/web/views/HighPerformanceComputing.html
   lambdas = NULL
   for (i in 1:opt$repeats){
     print(paste0("glmnet ",i))
@@ -42,6 +62,39 @@ best_lambda_model <- function(opt, myX, myY){
   best_coef_indicator <- coef(glmnet.fit)[,1] != 0
   coefs_in_best_model <- rownames(coef(glmnet.fit))[best_coef_indicator]
   
+  # Fit a glm model using coefficients from above
+  model_df <- data.frame(myY, myX[, names(myX) %in% coefs_in_best_model])
+  names(model_df)[1] <- "outcome"
+  model <- glm( outcome ~ ., data=model_df, family="binomial")
+  return(model)
+}
+#--------------------------------------
+
+#Function +++++++++++++++++++++++++++++
+best_lambda_model_replicate <- function(opt, myX, myY){
+  get_lambdas_errors <- function(opt, myX, myY){
+    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$repeats, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
+    return(data.frame(cvfit$lambda,cvfit$cvm))
+  }
+  
+  lambdas <- replicate(opt$repeats, get_lambdas_errors(opt, myX, myY)) 
+
+  print(lambdas)
+  stop("here")
+  # take mean cvm for each lambda
+  lambdas <- aggregate(lambdas[,2], list(lambdas$cvfit.lambda), mean)
+
+  # select the best lambda
+  bestindex = which(lambdas[,2]==min(lambdas[,2]))
+  bestlambda = lambdas[bestindex,1]
+
+  # and now run glmnet once more with the best lambda
+  glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$alpha)
+
+  # Determine the coeffients in model derived from best lambda
+  best_coef_indicator <- coef(glmnet.fit)[,1] != 0
+  coefs_in_best_model <- rownames(coef(glmnet.fit))[best_coef_indicator]
+
   # Fit a glm model using coefficients from above
   model_df <- data.frame(myY, myX[, names(myX) %in% coefs_in_best_model])
   names(model_df)[1] <- "outcome"
