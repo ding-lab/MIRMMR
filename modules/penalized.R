@@ -54,7 +54,7 @@ save(best_model, file=paste0(output_dir_prefix,".penalized_model.Robj"))
 if( opt$plots ){
   suppressPackageStartupMessages(library(ggplot2))
   #Plot predicted model value vs. MSI status
-  plot_df <- data.frame( trainX, predicted=best_model$fitted.values )
+  plot_df <- data.frame( status=df[train_set,col], predicted=best_model$fitted.values, group=df[train_set,opt$group] )
   plot_predicted( plot_df )
 
   #Plot consensus model vs. best model 

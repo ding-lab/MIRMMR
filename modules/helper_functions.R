@@ -114,10 +114,11 @@ plot_roc <- function( plot_df, user_title, module){
 #Function +++++++++++++++++++++++++++++
 #Plot predicted model value vs. MSI status
 plot_predicted <- function( plot_df ){
-  p <- ggplot(plot_df, aes(x=col, y=predicted))
+  p <- ggplot(plot_df, aes(x=status, y=predicted))
   p <- p + geom_violin()
-  p <- p + geom_jitter(width=0.3,height=0)
-  p <- p + labs(x="MSI status", y="Fitted probability of MSI status", title="Penalized regression probability of MSI staatus", color=opt$group)
+  p <- p + geom_jitter(aes(color=group), width=0.3, height=0)
+  p <- p + labs(x="MSI status", y="Fitted probability of MSI status", title="Penalized regression probability of MSI status", color=opt$group)
+  p <- p + scale_y_continuous(limits = c(0,1))
   pdf(paste0(output_dir_prefix,".penalized_predicted.pdf"),10,10)
   print(p)
   dev.off()
@@ -129,7 +130,7 @@ plot_predicted <- function( plot_df ){
 plot_consensus <- function( plot_df ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
-  p <- p + labs(x="Number of models", y="Model variable", title="Number of models each variable appeared in", color="Included in\n'best' model")
+  p <- p + labs(x="Number of models", y="Model variable", title="Number of models in which each variable appears", color="Included in\n'best' model")
   pdf(paste0(output_dir_prefix,".penalized_consensus.pdf"),10,10)
   print(p)
   dev.off()
