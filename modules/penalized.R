@@ -6,6 +6,10 @@ if(opt$set_seed != FALSE){
 }
 
 suppressPackageStartupMessages(library(glmnet))
+if( opt$parallel ){
+  suppressPackageStartupMessages(library(doMC))
+  registerDoMC(cores=opt$par_cores)
+}
 
 #Data to be used
 if( opt$train ){
@@ -24,20 +28,13 @@ if( opt$train ){
 
 # If user specified to run consensus step
 if( opt$consensus ){
-  p1 <- proc.time(); print("Start consensus")
-  #parameter_counts <- consensus_parameters(opt, trainX, trainY)
-  parameter_counts <- consensus_parameters_replicate(opt, trainX, trainY)
-  print("End consensus")
-  print(proc.time()-p1)
+  parameter_counts <- consensus_parameters(opt, trainX, trainY)
 }
 
 
 # Find best model using penalized regression
-p3 <- proc.time(); print("Start best lambda")
-#best_model <- best_lambda_model(opt, trainX, trainY)
-best_model <- best_lambda_model_replicate(opt, trainX, trainY)
-print("End best lambda")
-print(proc.time()-p3)
+best_model <- best_lambda_model(opt, trainX, trainY)
+
 # Use test data to evaluate training model
 if( opt$train ){
   test_roc <- create_test_roc(best_model, as.data.frame(testX), testY)

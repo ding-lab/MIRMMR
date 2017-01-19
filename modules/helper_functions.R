@@ -3,82 +3,24 @@
 #Function +++++++++++++++++++++++++++++
 #Track how many times each variable appears in models
 consensus_parameters <- function(opt, myX, myY){
-  variables_in_model <- vector("list", opt$repeats)
-  for(i in 1:opt$repeats){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
-    variables_in_model[[i]] <- row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0]
-  }
-  variables_in_model_df <- data.frame(table(unlist(variables_in_model)))
-  names(variables_in_model_df) <- c("Parameter","Count")
-  print(head(variables_in_model_df))
-  return(variables_in_model_df)
-}
-#--------------------------------------
-
-#Function +++++++++++++++++++++++++++++
-#Track how many times each variable appears in models
-consensus_parameters_replicate <- function(opt, myX, myY){
-  #TODO parallel https://www.r-bloggers.com/how-to-go-parallel-in-r-basics-tips/
-  #http://adv-r.had.co.nz/Profiling.html#parallelise
-  #https://cran.r-project.org/web/views/HighPerformanceComputing.html
   get_cvglmnet_variables <- function(opt, myX, myY){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
+    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha, parallel=opt$parallel)
     return(row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0])
   }
+
   variables_in_model <- replicate(opt$repeats, get_cvglmnet_variables(opt, myX, myY))
   
   variables_in_model_df <- data.frame(table(unlist(variables_in_model)))
   names(variables_in_model_df) <- c("Parameter","Count")
-  print(head(variables_in_model_df))
   return(variables_in_model_df)
 }
 #--------------------------------------
 
-
-#Function +++++++++++++++++++++++++++++
-#Find best lambda and return model with best lambda coefficients 
-#http://stats.stackexchange.com/questions/97777/variablity-in-cv-glmnet-results/173895#173895
-best_lambda_model <- function(opt, myX, myY){
-  lambdas = NULL
-  for (i in 1:opt$repeats){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$repeats, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
-    errors <- data.frame(cvfit$lambda,cvfit$cvm)
-    lambdas <- rbind(lambdas,errors)
-    #TODO make this more efficient by not growing lambdas each time or pre-specifying size
-  }
-  
-  # take mean cvm for each lambda
-  lambdas <- aggregate(lambdas[,2], list(lambdas$cvfit.lambda), mean)
-
-  # select the best lambda
-  bestindex = which(lambdas[,2]==min(lambdas[,2]))
-  bestlambda = lambdas[bestindex,1]
-  print(bestlambda)
-
-  # and now run glmnet once more with the best lambda
-  glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$alpha)
-
-  # Determine the coeffients in model derived from best lambda
-  best_coef_indicator <- coef(glmnet.fit)[,1] != 0
-  coefs_in_best_model <- rownames(coef(glmnet.fit))[best_coef_indicator]
-  
-  # Fit a glm model using coefficients from above
-  model_df <- data.frame(myY, myX[, names(myX) %in% coefs_in_best_model])
-  names(model_df)[1] <- "outcome"
-  model <- glm( outcome ~ ., data=model_df, family="binomial")
-  return(model)
-}
-#--------------------------------------
-
-#Function +++++++++++++++++++++++++++++
 #Find best lambda and return model with best lambda coefficients
 #http://stats.stackexchange.com/questions/97777/variablity-in-cv-glmnet-results/173895#173895
-best_lambda_model_replicate <- function(opt, myX, myY){
-  #TODO parallel https://www.r-bloggers.com/how-to-go-parallel-in-r-basics-tips/
-  #http://adv-r.had.co.nz/Profiling.html#parallelise
-  #https://cran.r-project.org/web/views/HighPerformanceComputing.html
+best_lambda_model <- function(opt, myX, myY){
   get_lambdas_errors <- function(opt, myX, myY){
-    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$repeats, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha)
+    cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha, parallel=opt$parallel)
     return(data.frame(cvfit$lambda,cvfit$cvm))
   }
   
@@ -88,9 +30,8 @@ best_lambda_model_replicate <- function(opt, myX, myY){
   lambdas <- aggregate(unlist(lambdas[2,]), list(unlist(lambdas[1,])), mean)
 
   # select the best lambda
-  bestindex = which(lambdas[,2]==min(lambdas[,2]))
-  bestlambda = lambdas[bestindex,1]
-  print(bestlambda)
+  bestindex <- which(lambdas[,2]==min(lambdas[,2]))
+  bestlambda <- min(lambdas[bestindex,1])
 
   # and now run glmnet once more with the best lambda
   glmnet.fit <- glmnet(x=myX, y=myY, lambda=bestlambda, family="binomial", alpha=opt$alpha)
@@ -100,7 +41,7 @@ best_lambda_model_replicate <- function(opt, myX, myY){
   coefs_in_best_model <- rownames(coef(glmnet.fit))[best_coef_indicator]
 
   # Fit a glm model using coefficients from above
-  model_df <- data.frame(myY, myX[, names(myX) %in% coefs_in_best_model])
+  model_df <- data.frame(myY, myX[, best_coef_indicator[-1]])
   names(model_df)[1] <- "outcome"
   model <- glm( outcome ~ ., data=model_df, family="binomial")
   return(model)
@@ -298,6 +239,14 @@ sanity_checks <- function(opt){
     #repeats
     if( is.na(opt$repeats) || opt$repeats!=round(opt$repeats) | opt$repeats < 1){
       error_message <- em(error_message, "Error: Number of repeats (--repeats) must be a positive integer, default is 1000.")
+    }
+    #parallel
+    if( is.na(opt$parallel) ){
+      error_message <- em(error_message, "Error: Parallel (--parallel) must be logical TRUE/FALSE, default is FALSE.")
+    }
+    #par_cores
+    if( is.na(opt$par_cores) || opt$par_cores!=round(opt$par_cores) | opt$par_cores < 1 ){
+      error_message <- em(error_message, "Error: Parallel cores (--par_cores) must be an integer greater than 0.")
     }
     #set_seed
     if( is.na(opt$set_seed) ){

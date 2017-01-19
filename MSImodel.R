@@ -18,6 +18,8 @@ option_list <- list(
   make_option(c("--lambda"), default="lambda.1se", type="character", help="Penalized module: Parameter lambda used in glmnet::cv.glmnet, default=\"%default\", options: lambda.1se, lambda.min"),
   make_option(c("--nfolds"), default=10, type="double", help="Penalized module: Parameter nfolds used in glmnet::cv.glmnet, default=%default"),
   make_option(c("--repeats"), default=1000, type="double", help="Penalized module: Number of times to repeat testing to determine optimal lambda in penalized module, default=%default"),
+  make_option(c("--parallel"), default=FALSE, type="logical", help="Penalized module: Option to use multiple cores when fitting different folds in glmnet::cv.glmnet, default=%default"),
+  make_option(c("--par_cores"), default=1, type="double", help="Penalized module: Number of cores to employ when using parallel (--parallel) option, should not exceed the number of folds (--nfolds), default=%default"),
   make_option(c("--set_seed"), default=0, type="double", help="Penalized module: Option to set seed before penalized module, seed can be set to any number except 0, default=%default"),
   make_option(c("--train"), default=FALSE, type="logical", help="Penalized module: Option to use a training set/test set approach to measure accuracy of best lambda approach, default=%default"),
   make_option(c("--train_proportion"), default=0.8, type="double", help="Penalized module: With --train=TRUE, the proportion of samples to keep in the training set, default=%default"),
