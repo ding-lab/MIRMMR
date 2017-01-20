@@ -23,7 +23,7 @@ trainY <- as.numeric(df[train_set,col])
 
 if( opt$train ){
   testX <- as.matrix(df[!train_set,fdc:ncol(df)])
-  testY <- as.matrix(df[!train_set,fdc:ncol(df)])
+  testY <- as.matrix(df[!train_set,col])
 }
 
 # If user specified to run consensus step
@@ -39,12 +39,14 @@ best_model <- best_lambda_model(opt, trainX, trainY)
 if( opt$train ){
   test_roc <- create_test_roc(best_model, as.data.frame(testX), testY)
   test_auc <- auc( test_roc )
+  print(test_auc)
   parameter_names <- c("AUC","(Intercept)", names(df[,fdc:ncol(df)]))
-  beta_values <- c(test_auc, rep(0,length(parameter_names)))
+  beta_values <- rep(0,length(parameter_names))
+  beta_values[1] <- test_auc
   count <- 1
-  for(param in parameter_names){
+  for(param in parameter_names[-1]){
     count <- count + 1
-    if( param %in% names(best_model$coefficients) ){
+    if( param %in% c("(Intercept)",names(best_model$coefficients)) ){
       beta_values[count] <- best_model$coefficients[[param]]
     }
   }

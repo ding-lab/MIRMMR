@@ -55,10 +55,10 @@ roc <- function( input ){
   #Truth is what we assume to be true (like TRUE, FALSE)
   #Score is a numeric value on a scale (like a probability between 0,1)
   #Output is a data frame starting from 0,0 up to 1,1 of values in ROC curve
-  output <- matrix(NA, ncol(input)+1, 2)
+  output <- matrix(NA, nrow(input)+1, 2)
   output[1,] <- c(0,0)
-  scores <- sort(input[,2])
-  for(i in 1:ncol(input)){
+  scores <- sort(input[,2], decreasing=TRUE)
+  for(i in 1:nrow(input)){
     threshold <- scores[i]
     num_tp <- sum(input[,2] >= threshold & input[,1])
     num_con_true <- sum(input[,1])
@@ -77,9 +77,9 @@ roc <- function( input ){
 auc <- function( roc ){
   #Input ROC has two columns: tp, fp
   cum_auc <- 0
-  for(i in 1:ncol(roc)-1 ){
-    rect <- (roc[i+1,1]-roc[i,1])*(roc[i,2])*(roc[i,2]) 
-    tri <- (1/2)*(roc[i+1,1]-roc[i,1])*(roc[i+1,2]-roc[i,2])
+  for(i in 1:(nrow(roc)-1) ){
+    rect <- roc[i,1]*(roc[i+1,2]-roc[i,2]) 
+    tri <- (1/2)*(roc[i+1,2]-roc[i,2])*(roc[i+1,1]-roc[i,1])
     cum_auc <- cum_auc + rect + tri
   }
   return(cum_auc)
@@ -90,7 +90,7 @@ auc <- function( roc ){
 #Test accuracy of model using test data
 create_test_roc <- function( model, testX, testY ){
   test_predictions <- predict( model, newdata=testX, type="response")
-  test_roc <- data.frame(truth=testY, score=test_predictions)
+  test_roc <- data.frame(truth=testY, score=test_predictions)  
   return( roc( test_roc ) )
 }
 #--------------------------------------
