@@ -149,7 +149,7 @@ sanity_checks <- function(opt){
   
   #Primary checks of module and data_frame
   #module
-  list_of_modules <- c("compare", "penalized", "stepwise", "univariate")
+  list_of_modules <- c("compare", "penalized", "predict", "stepwise", "univariate")
   if( !(opt$module %in% list_of_modules) ){
     error_message <- em(error_message, paste0("Error: module (-m) must be one of ", paste(list_of_modules, collapse=", "),"."))
   }
@@ -173,25 +173,29 @@ sanity_checks <- function(opt){
     stop(error_message)
   }
 
-  #Secondary checks of required options (msi_status, first_data_column, output_prefix, output_directory, overwrite, plots)
+  #Secondary checks of required options (msi_status, first_data_column, output_prefix, output_directory, overwrite, plots, model)
   #msi_status
-  if( is.null(opt$msi_status) ){
-    error_message <- em(error_message, "Error: MSI status column name (-i) must be specified.")
-  } else if( !(opt$msi_status %in% names(df))  ){
-    error_message <- em(error_message, "Error: MSI status column name (-i) not in data frame column names.")
-  } else if( length(levels(droplevels(as.factor(df[,opt$msi_status]))))!=2 ){
-    error_message <- em(error_message, "Error: MSI status column (-i) may only have two levels.")
-  } 
-  if( !is.null(error_message) ){
-    stop(error_message)
+  if( !(opt$module %in% c("predict","compare") )){
+    if( is.null(opt$msi_status) ){
+      error_message <- em(error_message, "Error: MSI status column name (-i) must be specified.")
+    } else if( !(opt$msi_status %in% names(df))  ){
+      error_message <- em(error_message, "Error: MSI status column name (-i) not in data frame column names.")
+    } else if( length(levels(droplevels(as.factor(df[,opt$msi_status]))))!=2 ){
+      error_message <- em(error_message, "Error: MSI status column (-i) may only have two levels.")
+    } 
+    if( !is.null(error_message) ){
+      stop(error_message)
+    }  
   }
   #first_data_column
   if( is.null(opt$first_data_column) ){
     error_message <- em(error_message, "Error: Number of first data column (-c) must be specified.")
   } else if( !is.numeric(opt$first_data_column) || opt$first_data_column!=round(opt$first_data_column) ){
     error_message <- em(error_message, "Error: Number of first data column (-c) must be an integer.")
-  } else if( opt$first_data_column >= ncol(df) | opt$first_data_column <= which(names(df)==opt$msi_status )){
-    error_message <- em(error_message, "Error: Number of first data column (-c) must be greater than the column number of the MSI status column and must be less than number of columns of the input data frame.")
+  } else if( opt$first_data_column >= ncol(df) ){
+    error_message <- em(error_message, "Error: Number of first data column (-c) must be less than the number of columns of the input data frame.")
+  } else if( !(opt$module %in% c("predict","compare")) && opt$first_data_column <= which(names(df)==opt$msi_status )){
+    error_message <- em(error_message, "Error: Number of first data column (-c) must be greater than the column number of the MSI status column.")
   }
   #output_prefix
   if( is.null(opt$output_prefix) ){
@@ -203,7 +207,21 @@ sanity_checks <- function(opt){
   }
   #overwrite
   if( !is.logical(opt$overwrite) ){
-    error_message <- em(error_message, "Error: Overwrite (--overwrite) must be logical TRUE/FALSE, default is FALSE")
+    error_message <- em(error_message, "Error: Overwrite (--overwrite) must be logical TRUE/FALSE, default is FALSE.")
+  }
+  #plots
+  if( !is.logical(opt$plots) ){
+    error_message <- em(error_message, "Error: Plots (--plots) must be logical TRUE/FALSE, default is FALSE.")
+  }
+  #model
+  if( opt$module=="predict" ){
+    if( is.null(opt$model) ){
+      error_message <- em(error_message, "Error: model (--model) is NULL and must be specified.")
+    } else if( !(file.exists(opt$model)) ){
+      error_message <- em(error_message, "Error: model (--model) file does not exist.")
+    } else if( file.access(opt$model, mode=4)!=0 ){
+      error_message <- em(error_message, "Error: model (--model) file is not readable.")
+    }
   }
   #Exit if error_message not NULL
   if( !is.null(error_message) ){
@@ -239,9 +257,6 @@ sanity_checks <- function(opt){
     #repeats
     if( is.na(opt$repeats) || opt$repeats!=round(opt$repeats) | opt$repeats < 1){
       error_message <- em(error_message, "Error: Number of repeats (--repeats) must be a positive integer, default is 1000.")
-    }
-    #parallel
-    if( is.na(opt$parallel) ){
       error_message <- em(error_message, "Error: Parallel (--parallel) must be logical TRUE/FALSE, default is FALSE.")
     }
     #par_cores
@@ -271,3 +286,6 @@ sanity_checks <- function(opt){
   }
 }
 #--------------------------------------
+#Set of functions to help facilitate rest of scripts
+
+#Function +++++++++++++++++++++++++++++

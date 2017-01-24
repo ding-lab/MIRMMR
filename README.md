@@ -7,7 +7,7 @@ MSI statistical model building using methylation and mutation data
     1. ~~Command line processing~~
     2. ~~Data input cleaning~~
     3. ~~Logic of commands~~
-  2. ~~Write modules~~
+  2. Write modules
     1. ~~Univariate analysis~~
     2. ~~Stepwise model building~~
     3. ~~Penalized regression~~
@@ -19,15 +19,15 @@ MSI statistical model building using methylation and mutation data
       2. Run existing methods
       3. ROC curves
       4. Discordant pairs
-    5. Predict
-      1. Model.Robj and data.frame input
-      2. Output scores
+    5. ~~Predict~~
+      1. ~~Model.Robj and data.frame input~~
+      2. ~~Output scores~~
     6. Debugging
       1. ~~Univariate~~
       2. ~~Stepwise~~
       3. ~~Penalized~~
       4. Compare
-      5. Input/output
+      5. ~~Predict~~
   3. Github documentation
     1. README.md
     2. Data sharing
