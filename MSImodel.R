@@ -11,8 +11,7 @@ option_list <- list(
   make_option(c("-o", "--output_prefix"), default=NULL, type="character", help="Output file name prefix, must be specified"),
   make_option(c("-d", "--output_directory"), default=NULL, type="character", help="Output directory, must be specified"),
   make_option(c("--overwrite"), default=FALSE, type="logical", help="Prevent overwriting existing files, turn off overwrite protection with TRUE, default=%default."),
-  make_option(c("--model"), default=NULL, type="character", help="Predict module: Path to model object (e.g. .Robj) to be used to predict status of new data, must be specified if using predict module."),
-  make_option(c("--plots"), default=FALSE, type="logical", help="Penalized or Compare module: Produce informative plots in the penalized module, default=%default"),
+  make_option(c("--plots"), default=FALSE, type="logical", help="Compare or Penalized module: Produce informative plots in the penalized module, default=%default"),
   make_option(c("--group"), default=NULL, type="character", help="Penalized module: Column name referring to a group identifier (e.g. cancer type) used in plotting, default=%default"),
   make_option(c("--alpha"), default=0.9, type="double", help="Penalized module: Parameter alpha used in glmnet::glmnet, default=%default"),
   make_option(c("--consensus"), default=FALSE, type="logical", help="Penalized module: Use consensus method in additional to best lambda method to find set of coefficients that appear in most models, only useful when used with --plots, default=%default"),
@@ -24,7 +23,8 @@ option_list <- list(
   make_option(c("--set_seed"), default=0, type="double", help="Penalized module: Option to set seed before penalized module, seed can be set to any number except 0, default=%default"),
   make_option(c("--train"), default=FALSE, type="logical", help="Penalized module: Option to use a training set/test set approach to measure accuracy of best lambda approach, default=%default"),
   make_option(c("--train_proportion"), default=0.8, type="double", help="Penalized module: With --train=TRUE, the proportion of samples to keep in the training set, default=%default"),
-  make_option(c("--type_measure"), default="class", type="character", help="Penalized module: Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default")
+  make_option(c("--type_measure"), default="class", type="character", help="Penalized module: Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default"),
+  make_option(c("--model"), default=NULL, type="character", help="Predict module: Path to model object (e.g. .Robj) to be used to predict status of new data, must be specified if using predict module.")
 )
 
 #Retrieve command line arguments
