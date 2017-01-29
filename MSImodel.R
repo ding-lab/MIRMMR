@@ -87,7 +87,12 @@ if( !opt$overwrite ){
       overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".penalized_model.Robj"," file already exists, set --overwrite=TRUE to overwrite.")
     }
   } else if( opt$module == "compare" ){
-    #TODO fill this in
+    if( file.exists(paste0(output_dir_prefix,".compare_models_roc.pdf")) ){
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_roc.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
+    }
+    if( file.exists(paste0(output_dir_prefix,".compare_models_discordant.pdf")) ){
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_discordant.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
+    }
   }
   if( !is.null(overwrite_message) ){
     stop(overwrite_message)
