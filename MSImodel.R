@@ -11,7 +11,7 @@ option_list <- list(
   make_option(c("-o", "--output_prefix"), default=NULL, type="character", help="Output file name prefix, must be specified"),
   make_option(c("-d", "--output_directory"), default=NULL, type="character", help="Output directory, must be specified"),
   make_option(c("--overwrite"), default=FALSE, type="logical", help="Prevent overwriting existing files, turn off overwrite protection with TRUE, default=%default."),
-  make_option(c("--plots"), default=FALSE, type="logical", help="Compare or Penalized module: Produce informative plots in the penalized module, default=%default"),
+  make_option(c("--plots"), default=TRUE, type="logical", help="Compare or Penalized module: Produce informative plots in the compare or penalized module, default=%default"),
   make_option(c("--group"), default=NULL, type="character", help="Penalized module: Column name referring to a group identifier (e.g. cancer type) used in plotting, default=%default"),
   make_option(c("--alpha"), default=0.9, type="double", help="Penalized module: Parameter alpha used in glmnet::glmnet, default=%default"),
   make_option(c("--consensus"), default=FALSE, type="logical", help="Penalized module: Use consensus method in additional to best lambda method to find set of coefficients that appear in most models, only useful when used with --plots, default=%default"),

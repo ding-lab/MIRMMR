@@ -15,9 +15,9 @@ MSI statistical model building using methylation and mutation data
       2. ~~Comparison of train/test accuracy with final (all data) model~~
       3. ~~Plotting~~
     4. Compare with other methods
-      1. Locate canonical tissue type bams
+      1. ~~Locate canonical tissue type bams~~
       2. Run existing methods
-      3. ROC curves
+      3. ~~ROC curves~~
       4. Discordant pairs
     5. ~~Predict~~
       1. ~~Model.Robj and data.frame input~~
