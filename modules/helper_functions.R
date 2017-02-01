@@ -68,6 +68,10 @@ roc <- function( input ){
     fp <- num_fp/num_con_false
     output[i+1,] <- c(tp, fp)
   }
+#  best_threshold_index <- which( output[,1]+(1-output[,2])==max(output[,1]+(1-output[,2])) )
+#  print( scores[best_threshold_index-1] )
+#  print( output[best_threshold_index,1] )
+#  print( 1-output[best_threshold_index,2] )
   return(output)
 }
 #--------------------------------------
@@ -108,6 +112,15 @@ plot_roc <- function( plot_df, user_title){
   pdf(paste0(output_dir_prefix,".compare_models_roc.pdf"),10,10)
   print(p)
   dev.off()
+}
+#--------------------------------------
+
+#Function +++++++++++++++++++++++++++++
+plot_compare <- function( plot_df, xlab, ylab, color_indicates, user_title  ){
+  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth))
+  p <- p + geom_point()
+  p <- p + labs(x=xlab, y=ylab, title=user_title, color=color_indicates)
+  print(p)
 }
 #--------------------------------------
 
@@ -286,6 +299,3 @@ sanity_checks <- function(opt){
   }
 }
 #--------------------------------------
-#Set of functions to help facilitate rest of scripts
-
-#Function +++++++++++++++++++++++++++++

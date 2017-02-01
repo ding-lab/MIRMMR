@@ -15,5 +15,19 @@ for(i in numeric_columns){
 
 plot_roc( plot_df, "ROC comparison of different methods" )
 
-#discordant_df <- subset(df, !apply(data.frame(df[,col], df[,binary_columns+fdc-1), 1, all), )
-#write.table(discordant_df, paste0(output_dir_prefix,".compare_models_discordant.txt"), quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\t")
+if(length(numeric_columns)>1){
+  pdf(paste0(output_dir_prefix,".compare_models_discordance.pdf"),10,10)
+  for(i in 2:length(numeric_columns)){
+    #compare column i-3 and i
+    plot_df <- data.frame(truth=df[,col], df[,numeric_columns[i-1]+fdc-1], df[,numeric_columns[i]+fdc-1])
+    names(plot_df)[2] <- names(df)[numeric_columns[i-1]+fdc-1]
+    names(plot_df)[3] <- names(df)[numeric_columns[i]+fdc-1]
+    plot_compare( plot_df, names(plot_df)[2], names(plot_df)[3], "TCGA MSI-High", "Comparison of method calls and 'true' calls")
+  }
+  dev.off()
+}
+
+#if(length(binary_columns)>0){
+#  discordant_df <- subset(df, !apply(data.frame(df[,col], df[,binary_columns+fdc-1]), 1, all))
+#  write.table(discordant_df, paste0(output_dir_prefix,".compare_models_discordance.txt"), quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\t")
+#}
