@@ -19,7 +19,7 @@ Microsatellite Instability Regression using Methylation and Mutations in R
 ---
 # Usage
 ```
-Rscript MSImodel.R module -m module -f data.frame -i msi.status -c first.data.column -o output.prefix -d output.directory [options]
+Rscript murmur.R -m module -f data.frame -i msi.status -c first.data.column -o output.prefix -d output.directory [options]
 ```
 ---
 # Modules
