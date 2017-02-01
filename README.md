@@ -10,11 +10,11 @@ Microsatellite Instability Regression using Methylation and Mutations in R
     3. Univariate
     4. Predict
     5. Compare
-2. Paper writing
+2. Clean up code / small improvements
+3. Paper writing
   1. ~~Complete draft~~
   2. Output in paper format
   3. Make figures publication quality
-3. Clean up code / small improvements
 ---
 # Usage
 ```
