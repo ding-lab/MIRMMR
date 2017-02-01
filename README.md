@@ -1,51 +1,29 @@
-# MSImodel
-MSI statistical model building using methylation and mutation data
+# MIRMMR (murmur)
+Microsatellite Instability Regression using Methylation and Mutations in R
 ---
-# To do
-1. Compose MSImodel
-  1. ~~Write connective tissue~~
-    1. ~~Command line processing~~
-    2. ~~Data input cleaning~~
-    3. ~~Logic of commands~~
-  2. Write modules
-    1. ~~Univariate analysis~~
-    2. ~~Stepwise model building~~
-    3. ~~Penalized regression~~
-      1. ~~Selection of lambda~~
-      2. ~~Comparison of train/test accuracy with final (all data) model~~
-      3. ~~Plotting~~
-    4. Compare with other methods
-      1. ~~Locate canonical tissue type bams~~
-      2. Run existing methods
-      3. ~~ROC curves~~
-      4. Discordant pairs
-    5. ~~Predict~~
-      1. ~~Model.Robj and data.frame input~~
-      2. ~~Output scores~~
-    6. Debugging
-      1. ~~Univariate~~
-      2. ~~Stepwise~~
-      3. ~~Penalized~~
-      4. Compare
-      5. ~~Predict~~
-  3. Github documentation
-    1. README.md
-    2. Data sharing
-2. Compose paper
-  1. ~~Write outline~~
-  2. Introduction
-  3. Methods
-  4. Results
-  5. Conclusions
-
+# TODO
+1. Complete README.md
+  1. Usage
+  2. Modules
+    1. Penalized
+    2. Stepwise
+    3. Univariate
+    4. Predict
+    5. Compare
+2. Paper writing
+  1. ~~Complete draft~~
+  2. Output in paper format
+  3. Make figures publication quality
+3. Clean up code / small improvements
 ---
 # Usage
 ```
-MSImodel module input output [options]
+Rscript MSImodel.R module -m module -f data.frame -i msi.status -c first.data.column -o output.prefix -d output.directory [options]
 ```
 ---
 # Modules
-### Univariate analysis
-### Stepwise model building
-### Penalized regression
-### Methods comparison
+### Penalized
+### Stepwise
+### Univariate
+### Predict
+### Compare
