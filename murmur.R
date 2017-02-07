@@ -90,6 +90,10 @@ if( !opt$overwrite ){
     if( file.exists(paste0(output_dir_prefix,".compare_models_discordant.pdf")) ){
       overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_discordant.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
     }
+  } else if( opt$module == "predict" ){
+    if( file.exists(paste0(output_dir_prefix,".predict.txt")) ){
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".predict.txt"," file already exists, set --overwrite=TRUE to overwrite.")
+    }
   }
   if( !is.null(overwrite_message) ){
     stop(overwrite_message)
