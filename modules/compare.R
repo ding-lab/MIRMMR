@@ -19,7 +19,13 @@ if(length(numeric_columns)>1){
   pdf(paste0(output_dir_prefix,".compare_models_discordance.pdf"),10,10)
   for(i in 2:length(numeric_columns)){
     #compare column i-3 and i
-    plot_df <- data.frame(truth=df[,col], df[,numeric_columns[i-1]+fdc-1], df[,numeric_columns[i]+fdc-1])
+    x <- df[,numeric_columns[i-1]+fdc-1]
+    y <- df[,numeric_columns[i]+fdc-1]
+    xcutoff <- 
+    ycutoff <- 
+    xcall <- (x >= xcutoff)
+    ycall <- (y >= ycutoff)
+    plot_df <- data.frame(truth=df[,col], x, y, discordant=(xcall==ycall))
     names(plot_df)[2] <- names(df)[numeric_columns[i-1]+fdc-1]
     names(plot_df)[3] <- names(df)[numeric_columns[i]+fdc-1]
     plot_compare( plot_df, xlab=names(plot_df)[2], ylab=names(plot_df)[3], color_indicates=opt$color_indicates, theme=opt$theme_bw)

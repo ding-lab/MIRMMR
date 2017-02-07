@@ -68,10 +68,6 @@ roc <- function( input ){
     fp <- num_fp/num_con_false
     output[i+1,] <- c(tp, fp)
   }
-#  best_threshold_index <- which( output[,1]+(1-output[,2])==max(output[,1]+(1-output[,2])) )
-#  print( scores[best_threshold_index-1] )
-#  print( output[best_threshold_index,1] )
-#  print( 1-output[best_threshold_index,2] )
   return(output)
 }
 #--------------------------------------
@@ -117,10 +113,12 @@ plot_roc <- function( plot_df, xlab, ylab, color_indicates, theme ){
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
-plot_compare <- function( plot_df, xlab, ylab, color_indicates, theme ){
-  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth))
-  p <- p + geom_point()
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+plot_compare <- function( plot_df, xlab, ylab, color_indicates, theme, xcutoff, ycutoff ){
+  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth, shape=discordant))
+  p <- p + geom_point(alpha=0.5)
+  p <- p + geom_vline(xintercept=xcutoff, alpha=0.5, linetype=2)
+  p <- p + geom_hline(yintercept=ycutoff, alpha=0.5, linetype=2)
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates, shape="Discordant")
   if( theme ){ p <- p + theme_bw() }
   print(p)
 }
