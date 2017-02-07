@@ -102,13 +102,14 @@ create_test_roc <- function( model, testX, testY ){
 ### PLOTS ###
 #Function +++++++++++++++++++++++++++++
 #Plot a ROC curve
-plot_roc <- function( plot_df, user_title){
+plot_roc <- function( plot_df, xlab, ylab, color_indicates, theme ){
   #Function plots a ROC curve given (possible) multiple curves
   #Input is a three column data frame (method, fpr, tpr)
   p <- ggplot(plot_df, aes(x=fpr, y=tpr, color=method))
   p <- p + geom_line(size=1)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
-  p <- p + labs(x="False positive rate", y="True positive rate", title=user_title, color="Method")
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  if( theme ){ p <- p + theme_bw() }
   pdf(paste0(output_dir_prefix,".compare_models_roc.pdf"),10,10)
   print(p)
   dev.off()
@@ -116,22 +117,24 @@ plot_roc <- function( plot_df, user_title){
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
-plot_compare <- function( plot_df, xlab, ylab, color_indicates, user_title  ){
+plot_compare <- function( plot_df, xlab, ylab, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth))
   p <- p + geom_point()
-  p <- p + labs(x=xlab, y=ylab, title=user_title, color=color_indicates)
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  if( theme ){ p <- p + theme_bw() }
   print(p)
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
 #Plot predicted model value vs. MSI status
-plot_predicted <- function( plot_df ){
+plot_predicted <- function( plot_df, xlab, ylab, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=status, y=predicted))
   p <- p + geom_violin()
   p <- p + geom_jitter(aes(color=group), width=0.3, height=0)
-  p <- p + labs(x="MSI status", y="Fitted probability of MSI status", title="Penalized regression probability of MSI status", color=opt$group)
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
   p <- p + scale_y_continuous(limits = c(0,1))
+  if( theme ){ p <- p + theme_bw() }
   pdf(paste0(output_dir_prefix,".penalized_predicted.pdf"),10,10)
   print(p)
   dev.off()
@@ -140,10 +143,11 @@ plot_predicted <- function( plot_df ){
 
 #Function +++++++++++++++++++++++++++++
 #Plot consensus model vs. best model
-plot_consensus <- function( plot_df ){
+plot_consensus <- function( plot_df, xlab, ylab, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
-  p <- p + labs(x="Number of models", y="Model variable", title="Number of models in which each variable appears", color="Included in\n'best' model")
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  if( theme ){ p <- p + theme_bw() }
   pdf(paste0(output_dir_prefix,".penalized_consensus.pdf"),10,10)
   print(p)
   dev.off()

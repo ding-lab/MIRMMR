@@ -6,6 +6,7 @@ if(opt$set_seed != FALSE){
 }
 
 suppressPackageStartupMessages(library(glmnet))
+
 if( opt$parallel ){
   suppressPackageStartupMessages(library(doMC))
   registerDoMC(cores=opt$par_cores)
@@ -39,7 +40,6 @@ best_model <- best_lambda_model(opt, trainX, trainY)
 if( opt$train ){
   test_roc <- create_test_roc(best_model, as.data.frame(testX), testY)
   test_auc <- auc( test_roc )
-  print(test_auc)
   parameter_names <- c("AUC","(Intercept)", names(df[,fdc:ncol(df)]))
   beta_values <- rep(0,length(parameter_names))
   beta_values[1] <- test_auc
@@ -62,11 +62,11 @@ if( opt$plots ){
   suppressPackageStartupMessages(library(ggplot2))
   #Plot predicted model value vs. MSI status
   plot_df <- data.frame( status=df[train_set,col], predicted=best_model$fitted.values, group=df[train_set,opt$group] )
-  plot_predicted( plot_df )
+  plot_predicted( plot_df, xlab=opt$xlab, ylab=opt$ylab, color_indicates=opt$color_indicates, theme=opt$theme_bw)
 
   #Plot consensus model vs. best model 
   if(opt$consensus){
     plot_df <- data.frame(parameter_counts, in_best_model=(parameter_counts$Parameter %in% names(best_model$coefficients)))
-    plot_consensus( plot_df )
+    plot_consensus( plot_df, xlab="Number of models", ylab="Model variable", color_indicates="Included in\n'best' model", theme=opt$theme_bw )
   }
 }
