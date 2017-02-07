@@ -8,8 +8,8 @@ names(results) <- params
 
 for( p in params ){
   model <- NULL
-  #Run univariate logistic or linear regression
-  #Col is the MSI status column name
+  #Run univariate logistic regression
+  #col is the MSI status column name
   #p is the parameter of interest column name
   results[[p]] <- glm( df[,col] ~ df[,p], data=df, family=binomial)
 }

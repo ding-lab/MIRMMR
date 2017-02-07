@@ -30,13 +30,10 @@ option_list <- list(
 #Retrieve command line arguments
 opt <- parse_args(OptionParser(usage="%prog -m MODULE -f DATA_FRAME -i MSI_STATUS -c FIRST_DATA_COLUMN -o OUTPUT_PREFIX -d OUTPUT_DIRECTORY [options]\n\nAssumptions:\n1. The data frame has meta information columns (e.g. sample name, cancer type, MSI score)\n2. Followed by data columns (i.e. predictors in regression models)\n3. And that the input data frame has column headers.", option_list=option_list))
 
-#print(opt)
-
 #Get path of this script to run sources
 #StackOverflow: http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script/1815743#1815743 
 initial.options <- commandArgs(trailingOnly = FALSE)
-file.arg.name <- "--file="
-script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+script.name <- sub("--file=", "", initial.options[grep(file.arg.name, initial.options)])
 script.basename <- dirname(script.name)
 
 #Source these helper functions
@@ -45,7 +42,7 @@ source(paste0(script.basename,"/modules/helper_functions.R"))
 #Sanity check on the parameter inputs
 sanity_checks(opt)
 
-#df (set during sanity_checks) is the name of the input data frame
+#df is the name of the input data frame
 df <- read.table(opt$data_frame, header=TRUE)
 #col is the column name referring to MSI status
 col <- opt$msi_status
