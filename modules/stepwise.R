@@ -13,15 +13,6 @@ model <- glm(f, data=df, family=binomial)
 all_models <- stepAIC(model, direction="both")
 best_model <- glm(all_models$formula, data=df, family=binomial)
 
-#Predict MSI-H probabilities based on model
-#probs <- predict(best_model, newdata=df, type="response")
-
-#ROC
-#roc_df <- roc( data.frame(df[,col], probs) )
-
-#AUC
-#auc <- auc( roc_df )
-
 #Write model summary to output
 sink(paste0(output_dir_prefix,".stepwise_model_summary.txt"))
 print(summary(best_model))
