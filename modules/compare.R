@@ -13,7 +13,7 @@ for(i in numeric_columns){
   plot_df <- rbind(plot_df, data.frame(tpr=roc_df[,1], fpr=roc_df[,2], method=rep(paste0(method, "\nAUC=", format(auc_measure,digits=4)),nrow(roc_df))))
 }
 
-plot_roc( plot_df, "ROC comparison of different methods" )
+plot_roc( plot_df, xlab="False positive rate", ylab="True positive rate", color_indicates="Method", theme=opt$theme_bw )
 
 if(length(numeric_columns)>1){
   pdf(paste0(output_dir_prefix,".compare_models_discordance.pdf"),10,10)
@@ -22,7 +22,7 @@ if(length(numeric_columns)>1){
     plot_df <- data.frame(truth=df[,col], df[,numeric_columns[i-1]+fdc-1], df[,numeric_columns[i]+fdc-1])
     names(plot_df)[2] <- names(df)[numeric_columns[i-1]+fdc-1]
     names(plot_df)[3] <- names(df)[numeric_columns[i]+fdc-1]
-    plot_compare( plot_df, names(plot_df)[2], names(plot_df)[3], "TCGA MSI-High", "Comparison of method calls and 'true' calls")
+    plot_compare( plot_df, xlab=names(plot_df)[2], ylab=names(plot_df)[3], color_indicates=opt$color_indicates, theme=opt$theme_bw)
   }
   dev.off()
 }
