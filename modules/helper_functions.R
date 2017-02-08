@@ -7,9 +7,7 @@ consensus_parameters <- function(opt, myX, myY){
     cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha, parallel=opt$parallel)
     return(row.names(coef(cvfit, s=opt$lambda))[coef(cvfit, s=opt$lambda)[,1] != 0])
   }
-
   variables_in_model <- replicate(opt$repeats, get_cvglmnet_variables(opt, myX, myY))
-  
   variables_in_model_df <- data.frame(table(unlist(variables_in_model)))
   names(variables_in_model_df) <- c("Parameter","Count")
   return(variables_in_model_df)
@@ -23,7 +21,7 @@ best_lambda_model <- function(opt, myX, myY){
     cvfit <- cv.glmnet(x=myX, y=myY, nfolds=opt$nfolds, family="binomial", type.measure=opt$type_measure, alpha=opt$alpha, parallel=opt$parallel)
     return(data.frame(cvfit$lambda,cvfit$cvm))
   }
-  
+    
   lambdas <- replicate(opt$repeats, get_lambdas_errors(opt, myX, myY))
   
   # take mean cvm for each lambda
