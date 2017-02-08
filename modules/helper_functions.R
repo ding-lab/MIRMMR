@@ -55,8 +55,8 @@ roc <- function( input ){
   #Truth is what we assume to be true (like TRUE, FALSE)
   #Score is a numeric value on a scale (like a probability between 0,1)
   #Output is a data frame starting from 0,0 up to 1,1 of values in ROC curve
-  output <- matrix(NA, nrow(input)+1, 2)
-  output[1,] <- c(0,0)
+  output <- matrix(NA, nrow(input)+1, 3)
+  output[1,] <- c(0,0,NA)
   scores <- sort(input[,2], decreasing=TRUE)
   for(i in 1:nrow(input)){
     threshold <- scores[i]
@@ -66,7 +66,7 @@ roc <- function( input ){
     num_con_false <- sum(!input[,1])
     tp <- num_tp/num_con_true
     fp <- num_fp/num_con_false
-    output[i+1,] <- c(tp, fp)
+    output[i+1,] <- c(tp, fp, threshold)
   }
   return(output)
 }
@@ -105,6 +105,7 @@ plot_roc <- function( plot_df, xlab, ylab, color_indicates, theme ){
   p <- p + geom_line(size=1)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
   p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  #p <- p + theme(legend.position=c(1,0))
   if( theme ){ p <- p + theme_bw() }
   pdf(paste0(output_dir_prefix,".compare_models_roc.pdf"),10,10)
   print(p)
