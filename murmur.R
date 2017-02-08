@@ -37,7 +37,8 @@ opt <- parse_args(OptionParser(usage="%prog -m MODULE -f DATA_FRAME -i MSI_STATU
 #Get path of this script to run sources
 #StackOverflow: http://stackoverflow.com/questions/1815606/rscript-determine-path-of-the-executing-script/1815743#1815743 
 initial.options <- commandArgs(trailingOnly = FALSE)
-script.name <- sub("--file=", "", initial.options[grep(file.arg.name, initial.options)])
+file.arg.name <- "--file="
+script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
 script.basename <- dirname(script.name)
 
 #Source these helper functions
