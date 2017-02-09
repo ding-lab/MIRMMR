@@ -113,13 +113,16 @@ plot_roc <- function( plot_df, xlab, ylab, color_indicates, theme ){
 
 #Function +++++++++++++++++++++++++++++
 plot_compare <- function( plot_df, xlab, ylab, color_indicates, theme, xcutoff, ycutoff ){
-  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth, shape=discordant))
-  p <- p + geom_point(alpha=0.5)
-  p <- p + geom_vline(xintercept=xcutoff, alpha=0.5, linetype=2)
-  p <- p + geom_hline(yintercept=ycutoff, alpha=0.5, linetype=2)
+  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth, shape=shape))
+  p <- p + geom_point()
+  p <- p + scale_shape_manual(values=c(1,16))
+  p <- p + geom_vline(aes(xintercept=xcutoff), alpha=0.5, linetype=2)
+  p <- p + geom_hline(aes(yintercept=ycutoff), alpha=0.5, linetype=2)
   p <- p + labs(x=xlab, y=ylab, color=color_indicates, shape="Discordant")
   if( theme ){ p <- p + theme_bw() }
+  pdf(paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"),10,10)
   print(p)
+  dev.off()
 }
 #--------------------------------------
 
@@ -144,6 +147,7 @@ plot_consensus <- function( plot_df, xlab, ylab, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
   p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  p <- p + scale_x_discrete()
   if( theme ){ p <- p + theme_bw() }
   pdf(paste0(output_dir_prefix,".penalized_consensus.pdf"),10,10)
   print(p)
