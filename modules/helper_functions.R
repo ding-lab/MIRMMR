@@ -103,8 +103,8 @@ plot_roc <- function( plot_df, xlab, ylab, color_indicates, theme ){
   p <- p + geom_line(size=1)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
   p <- p + labs(x=xlab, y=ylab, color=color_indicates)
-  #p <- p + theme(legend.position=c(1,0))
-  if( theme ){ p <- p + theme_bw() }
+  if( theme ){ p <- p + theme_bw() } 
+  p <- p + theme(legend.position=c(0.999,0.001), legend.justification=c(1,0))
   pdf(paste0(output_dir_prefix,".compare_models_roc.pdf"),10,10)
   print(p)
   dev.off()
@@ -118,7 +118,7 @@ plot_compare <- function( plot_df, xlab, ylab, color_indicates, theme, xcutoff, 
   p <- p + scale_shape_manual(values=c(1,16))
   p <- p + geom_vline(aes(xintercept=xcutoff), alpha=0.5, linetype=2)
   p <- p + geom_hline(aes(yintercept=ycutoff), alpha=0.5, linetype=2)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates, shape="Discordant")
+  p <- p + labs(x=paste0(xlab," (cutoff=", format(xcutoff,digits=4),")"), y=paste0(ylab," (cutoff=", format(ycutoff,digits=4),")"), color=color_indicates, shape="Discordant")
   if( theme ){ p <- p + theme_bw() }
   pdf(paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"),10,10)
   print(p)

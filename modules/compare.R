@@ -1,9 +1,11 @@
 #Compare results from various MSI status prediction methods
 suppressPackageStartupMessages(library(ggplot2))
-
+#TODO make this work when binary and numeric columns are not necessarily ordered 
 binary_columns <- which(apply(df[,fdc:ncol(df)],2,function(x) length(levels(as.factor(x))))==2)
 numeric_columns <- which(apply(df[,fdc:ncol(df)],2,function(x) length(levels(as.factor(x))))!=2)
 
+binary_df <- as.data.frame(apply(df[,fdc+binary_columns-1], 2, function(x) as.logical(as.numeric(as.factor(x))-1)))
+print(binary_df)
 numeric_df <- df[,fdc+numeric_columns-1]
 n_numeric <- ncol(numeric_df)
 
@@ -15,7 +17,7 @@ for(i in numeric_columns){
   roc_df <- roc( temp_df )
   cutoffs[i] <- roc_df[which(max(roc_df[,1]+1-roc_df[,2])==roc_df[,1]+1-roc_df[,2]),3]
   auc_measure <- auc( roc_df )
-  plot_df <- rbind(plot_df, data.frame(tpr=roc_df[,1], fpr=roc_df[,2], method=rep(paste0(method, "\nAUC=", format(auc_measure,digits=4), "\nCutoff=", format(cutoffs[i],digits=4)),nrow(roc_df))))
+  plot_df <- rbind(plot_df, data.frame(tpr=roc_df[,1], fpr=roc_df[,2], method=rep(paste0("\n",method, "\nAUC=", format(auc_measure,digits=4), "\nCutoff=", format(cutoffs[i],digits=4),"\n"),nrow(roc_df))))
 }
 
 plot_roc( plot_df, xlab="False positive rate", ylab="True positive rate", color_indicates="Method", theme=opt$theme_bw )
@@ -23,10 +25,6 @@ plot_roc( plot_df, xlab="False positive rate", ylab="True positive rate", color_
 if(n_numeric>1){
   for(i in 1:(n_numeric-1)){
     for(j in (i+1):n_numeric){
-      #if(i==j){
-      #  next
-      #}
-      #compare column i and j
       x <- numeric_df[,i]
       y <- numeric_df[,j]
       xcall <- (x >= cutoffs[i])
@@ -35,8 +33,22 @@ if(n_numeric>1){
       plot_df <- data.frame(truth=df[,col], x, y, shape=c("No","Yes")[dis12])
       names(plot_df)[2] <- names(numeric_df)[i]
       names(plot_df)[3] <- names(numeric_df)[j]
-      plot_compare( plot_df, xlab=names(plot_df)[2], ylab=names(plot_df)[3], color_indicates=opt$color_indicates, theme=opt$theme_bw, xcutoff=cutoffs[i], ycutoff=cutoffs[j])
+      method1=names(plot_df)[2]
+      method2=names(plot_df)[3]
+      plot_compare( plot_df, xlab=method1, ylab=method2, color_indicates=opt$color_indicates, theme=opt$theme_bw, xcutoff=cutoffs[i], ycutoff=cutoffs[j])
     }
   }
 }
+
+numeric_as_binary_df <- rep(TRUE, nrow(numeric_df))
+for(i in 1:n_numeric){
+  numeric_as_binary_df <- data.frame(numeric_as_binary_df, numeric_df[,i] >= cutoffs[i])
+  names(numeric_as_binary_df)[i] <- names(numeric_df)[i]
+}
+
+truth_table <- data.frame(df[,col], binary_df, numeric_as_binary_df)
+print(truth_table)
+discordant_vector <- apply(truth_table,1,function(x) !all(x))
+print(discordant_vector)
+#print(df[discordant_vector,])
 
