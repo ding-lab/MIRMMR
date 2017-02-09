@@ -28,7 +28,7 @@ option_list <- list(
   make_option(c("--train"), default=FALSE, type="logical", help="Penalized module: Option to use a training set/test set approach to measure accuracy of best lambda approach, default=%default"),
   make_option(c("--train_proportion"), default=0.8, type="double", help="Penalized module: With --train=TRUE, the proportion of samples to keep in the training set, default=%default"),
   make_option(c("--type_measure"), default="class", type="character", help="Penalized module: Parameter type.measure used in glmnet::cv.glmnet (options: mse, deviance, mae, class, auc), default=%default"),
-  make_option(c("--model"), default=NULL, type="character", help="Predict module: Path to model object (e.g. .Robj) to be used to predict status of new data, must be specified if using predict module.")
+  make_option(c("--model"), default=NULL, type="character", help="Predict module: Path to model object (e.g. model.Robj) to be used to predict status of new data, must be specified if using predict module.")
 )
 
 #Retrieve command line arguments
