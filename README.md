@@ -24,6 +24,9 @@ Rscript murmur.R -m module -f data.frame -i msi.status -c first.data.column -o o
 ---
 # Modules
 ### Penalized
+```
+Rscript murmur.R -m penalized -f data.frame -i msi.status -c first.data.column -o output.prefix -d output.directory [options]
+```
 ### Stepwise
 ### Univariate
 ### Predict
