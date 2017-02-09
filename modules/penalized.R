@@ -29,15 +29,11 @@ if( opt$train ){
 
 # If user specified to run consensus step
 if( opt$consensus ){
-  print('gets here')
   parameter_counts <- consensus_parameters(opt, trainX, trainY)
-  print('gets here 2')
 }
 
 # Find best model using penalized regression
-print('gets here 3')
 best_model <- best_lambda_model(opt, trainX, trainY)
-print('gets here 4')
 
 # Use test data to evaluate training model
 if( opt$train ){
