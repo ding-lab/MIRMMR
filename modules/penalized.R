@@ -61,7 +61,7 @@ if( opt$plots ){
   suppressPackageStartupMessages(library(ggplot2))
   #Plot predicted model value vs. MSI status
   plot_df <- data.frame( status=df[train_set,col], predicted=best_model$fitted.values, group=df[train_set,opt$group] )
-  plot_predicted( plot_df, xlab=opt$xlab, ylab=opt$ylab, color_indicates=opt$color_indicates, theme=opt$theme_bw)
+  plot_predicted( plot_df, xlab=opt$xlab, ylab=opt$ylab, title=opt$title, color_indicates=opt$color_indicates, theme=opt$theme_bw)
 
   #Plot consensus model vs. best model 
   if(opt$consensus){

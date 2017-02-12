@@ -96,62 +96,57 @@ create_test_roc <- function( model, testX, testY ){
 ### PLOTS ###
 #Function +++++++++++++++++++++++++++++
 #Plot a ROC curve
-plot_roc <- function( plot_df, xlab, ylab, color_indicates, theme ){
+plot_roc <- function( plot_df, xlab, ylab, title, color_indicates, theme ){
   #Function plots a ROC curve given (possible) multiple curves
   #Input is a three column data frame (method, fpr, tpr)
   p <- ggplot(plot_df, aes(x=fpr, y=tpr, color=method))
-  p <- p + geom_line(size=1)
+  p <- p + geom_line(size=2)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
-  if( theme ){ p <- p + theme_bw() } 
-  p <- p + theme(legend.position=c(0.999,0.001), legend.justification=c(1,0))
-  pdf(paste0(output_dir_prefix,".compare_models_roc.pdf"),10,10)
-  print(p)
-  dev.off()
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
+  if( theme ){ p <- p + theme_bw(base_size=20) } 
+  p <- p + theme(legend.position=c(0.9995,0.0005), legend.justification=c(1,0), legend.background=element_rect(fill="white", color="black", size=0.25))
+  ggsave(p, file=paste0(output_dir_prefix,".compare_models_roc.pdf"), width=10, height=10)
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
-plot_compare <- function( plot_df, xlab, ylab, color_indicates, theme, xcutoff, ycutoff ){
-  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth, shape=shape))
-  p <- p + geom_point()
+plot_compare <- function( plot_df, xlab, ylab, title, color_indicates, theme, xcutoff, ycutoff ){
+  p <- ggplot(plot_df, aes(x=plot_df[,2], y=plot_df[,3], color=truth, shape=discordant))
+  p <- p + geom_point(size=3, na.rm=TRUE)
   p <- p + scale_shape_manual(values=c(1,16))
   p <- p + geom_vline(aes(xintercept=xcutoff), alpha=0.5, linetype=2)
   p <- p + geom_hline(aes(yintercept=ycutoff), alpha=0.5, linetype=2)
-  p <- p + labs(x=paste0(xlab," (cutoff=", format(xcutoff,digits=4),")"), y=paste0(ylab," (cutoff=", format(ycutoff,digits=4),")"), color=color_indicates, shape="Discordant")
-  if( theme ){ p <- p + theme_bw() }
-  pdf(paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"),10,10)
-  print(p)
-  dev.off()
+  p <- p + geom_label(aes(x=xpos, y=ypos, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
+  p <- p + geom_label(aes(x=xpos, y=ypos, label=ytext), na.rm=TRUE, color="black", fill="white")
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title, shape="Discordant")
+  p <- p + coord_fixed(ratio=(max(x,na.rm=T)-min(x,na.rm=T))/(max(y,na.rm=T)-min(y,na.rm=T)))
+  if( theme ){ p <- p + theme_bw(base_size=20) }
+  ggsave(p, file=paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), width=10, height=10)
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
 #Plot predicted model value vs. MSI status
-plot_predicted <- function( plot_df, xlab, ylab, color_indicates, theme ){
+plot_predicted <- function( plot_df, xlab, ylab, title, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=status, y=predicted))
   p <- p + geom_violin()
-  p <- p + geom_jitter(aes(color=group), width=0.3, height=0)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  p <- p + geom_jitter(aes(color=group), size=3, width=0.3, height=0)
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
   p <- p + scale_y_continuous(limits = c(0,1))
-  if( theme ){ p <- p + theme_bw() }
-  pdf(paste0(output_dir_prefix,".penalized_predicted.pdf"),10,10)
-  print(p)
-  dev.off()
+  p <- p + coord_fixed(ratio=2)
+  if( theme ){ p <- p + theme_bw(base_size=20) }
+  ggsave(p, file=paste0(output_dir_prefix,".penalized_predicted.pdf"), width=10, height=10) 
 }
 #--------------------------------------
 
 #Function +++++++++++++++++++++++++++++
 #Plot consensus model vs. best model
-plot_consensus <- function( plot_df, xlab, ylab, color_indicates, theme ){
+plot_consensus <- function( plot_df, xlab, ylab, title, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates)
-  p <- p + scale_x_discrete()
-  if( theme ){ p <- p + theme_bw() }
-  pdf(paste0(output_dir_prefix,".penalized_consensus.pdf"),10,10)
-  print(p)
-  dev.off()
+  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
+  if( theme ){ p <- p + theme_bw(base_size=20) }
+  ggsave(p, file=paste0(output_dir_prefix,".penalized_consensus.pdf"), width=10, height=10)
 }
 #--------------------------------------
 

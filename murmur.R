@@ -14,6 +14,7 @@ option_list <- list(
   make_option(c("--plots"), default=TRUE, type="logical", help="Compare or Penalized module: Produce informative plots in the compare or penalized module, default=%default"),
   make_option(c("--xlabel"), default=NULL, type="character", help="Compare or Penalized module: Label for x-axis in 'discordance' or 'predicted' plots, default=%default"),
   make_option(c("--ylabel"), default=NULL, type="character", help="Compare or Penalized module: Label for y-axis in 'discordance' or 'predicted' plots, default=%default"),
+  make_option(c("--title"), default=NULL, type="character", help="Compare or Penalized module: Title of the plot, default=%default"),
   make_option(c("--color_indicates"), default=NULL, type="character", help="Compare or Penalized module: Label for legend in 'discordance' or 'predicted' plots, default=%default"),
   make_option(c("--theme_bw"), default=FALSE, type="logical", help="Compare of Penalized module: Logical indicator for using the bw theme in R's ggplot2 package, default=%default"),
   make_option(c("--group"), default=NULL, type="character", help="Penalized module: Column name referring to a group identifier (e.g. cancer type) used in plotting, default=%default"),
@@ -92,8 +93,11 @@ if( !opt$overwrite ){
     if( file.exists(paste0(output_dir_prefix,".compare_models_roc.pdf")) ){
       overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_roc.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
     }
-    if( file.exists(paste0(output_dir_prefix,".compare_models_discordant.pdf")) ){
-      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_discordant.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
+    #if( file.exists(paste0(output_dir_prefix,".compare_models_discordant.pdf")) ){
+    #  overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_discordant.pdf"," file already exists, set --overwrite=TRUE to overwrite.")
+    #}
+    if( file.exists(paste0(output_dir_prefix,".compare_discordant_samples.txt")) ){
+      overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_discordant_samples.txt"," file already exists, set --overwrite=TRUE to overwrite.")
     }
   } else if( opt$module == "predict" ){
     if( file.exists(paste0(output_dir_prefix,".predict.txt")) ){
@@ -102,7 +106,7 @@ if( !opt$overwrite ){
   }
   if( !is.null(overwrite_message) ){
     stop(overwrite_message)
-  } 
+  }
 }
 
 #Now run specified model
