@@ -102,7 +102,11 @@ plot_roc <- function( plot_df, xlab, ylab, title, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=fpr, y=tpr, color=method))
   p <- p + geom_line(size=2)
   p <- p + geom_abline(intercept=0, slope=1, linetype=2, alpha=0.5)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
+  if( is.null(title) ){
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  } else {
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates, title="ROC curve comparison of methods")
+  }
   if( theme ){ p <- p + theme_bw(base_size=20) } 
   p <- p + theme(legend.position=c(0.9995,0.0005), legend.justification=c(1,0), legend.background=element_rect(fill="white", color="black", size=0.25))
   ggsave(p, file=paste0(output_dir_prefix,".compare_models_roc.pdf"), width=10, height=10)
@@ -118,7 +122,11 @@ plot_compare <- function( plot_df, xlab, ylab, title, color_indicates, theme, xc
   p <- p + geom_hline(aes(yintercept=ycutoff), alpha=0.5, linetype=2)
   p <- p + geom_label(aes(x=xpos, y=ypos, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
   p <- p + geom_label(aes(x=xpos, y=ypos, label=ytext), na.rm=TRUE, color="black", fill="white")
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title, shape="Discordant")
+  if( is.null(title) ){
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates, shape="Discordant")
+  } else{
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title, shape="Discordant")
+  }
   p <- p + coord_fixed(ratio=(max(x,na.rm=T)-min(x,na.rm=T))/(max(y,na.rm=T)-min(y,na.rm=T)))
   if( theme ){ p <- p + theme_bw(base_size=20) }
   ggsave(p, file=paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), width=10, height=10)
@@ -131,7 +139,11 @@ plot_predicted <- function( plot_df, xlab, ylab, title, color_indicates, theme )
   p <- ggplot(plot_df, aes(x=status, y=predicted))
   p <- p + geom_violin()
   p <- p + geom_jitter(aes(color=group), size=3, width=0.3, height=0)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
+  if( is.null(title) ){
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  }  else{
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
+  }
   p <- p + scale_y_continuous(limits = c(0,1))
   p <- p + coord_fixed(ratio=2)
   if( theme ){ p <- p + theme_bw(base_size=20) }
@@ -144,7 +156,13 @@ plot_predicted <- function( plot_df, xlab, ylab, title, color_indicates, theme )
 plot_consensus <- function( plot_df, xlab, ylab, title, color_indicates, theme ){
   p <- ggplot(plot_df, aes(x=Count, y=reorder(Parameter,Count), color=in_best_model))
   p <- p + geom_point(size=3)
-  p <- p + labs(x=xlab, y=ylab, color=color_indicates, title=title)
+  if( is.null(title) ){
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates)
+  } else{
+    p <- p + labs(x=xlab, y=ylab, color=color_indicates, title="Consensus of model variables included")
+  }
+  p <- p + xlim(c(0,max(plot_df$Count)))
+  p <- p + coord_fixed(ratio=(max(plot_df$Count)+1)/nrow(plot_df))
   if( theme ){ p <- p + theme_bw(base_size=20) }
   ggsave(p, file=paste0(output_dir_prefix,".penalized_consensus.pdf"), width=10, height=10)
 }

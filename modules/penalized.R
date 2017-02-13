@@ -66,6 +66,6 @@ if( opt$plots ){
   #Plot consensus model vs. best model 
   if(opt$consensus){
     plot_df <- data.frame(parameter_counts, in_best_model=(parameter_counts$Parameter %in% names(best_model$coefficients)))
-    plot_consensus( plot_df, xlab="Number of models", ylab="Model variable", color_indicates="Included in\n'best' model", theme=opt$theme_bw )
+    plot_consensus( plot_df, xlab="Number of models", ylab="Model variable", title=opt$title, color_indicates="Included in\n'best' model", theme=opt$theme_bw )
   }
 }

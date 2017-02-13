@@ -20,7 +20,7 @@ for(i in 1:n_numeric){
   plot_df <- rbind(plot_df, data.frame(tpr=roc_df[,1], fpr=roc_df[,2], method=rep(paste0("\n",method, "\nAUC=", format(auc_measure,digits=4), "\nCutoff=", format(cutoffs[i],digits=4),"\n"),nrow(roc_df))))
 }
 
-plot_roc( plot_df, xlab="False positive rate", ylab="True positive rate", color_indicates="Method", theme=opt$theme_bw )
+plot_roc( plot_df, xlab="False positive rate", ylab="True positive rate", title=opt$title, color_indicates="Method", theme=opt$theme_bw )
 
 numeric_as_binary_df <- rep(TRUE, nrow(numeric_df))
 for(i in 1:n_numeric){
@@ -70,7 +70,7 @@ if(n_numeric>1){
         overwrite_message <- paste0(overwrite_message,"\n",output_dir_prefix,".compare_models_discordant.", method1, "-", method2, ".pdf"," file already exists, set --overwrite=TRUE to overwrite.")
         stop(overwrite_message)
       }
-      plot_compare( plot_df, xlab=method1, ylab=method2, color_indicates=opt$color_indicates, theme=opt$theme_bw, xcutoff=cutoffs[i], ycutoff=cutoffs[j])
+      plot_compare( plot_df, xlab=method1, ylab=method2, title=opt$title, color_indicates=opt$color_indicates, theme=opt$theme_bw, xcutoff=cutoffs[i], ycutoff=cutoffs[j])
     }
   }
 }
