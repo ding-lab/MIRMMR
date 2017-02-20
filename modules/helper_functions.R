@@ -109,6 +109,7 @@ plot_roc <- function( plot_df, xlab, ylab, title, color_indicates, theme ){
   }
   if( theme ){ p <- p + theme_bw(base_size=20) } 
   p <- p + theme(legend.position=c(0.9995,0.0005), legend.justification=c(1,0), legend.background=element_rect(fill="white", color="black", size=0.25))
+  p <- p + scale_colour_brewer(palette = "Set1")
   ggsave(p, file=paste0(output_dir_prefix,".compare_models_roc.pdf"), width=10, height=10)
 }
 #--------------------------------------
@@ -120,8 +121,11 @@ plot_compare <- function( plot_df, xlab, ylab, title, color_indicates, theme, xc
   p <- p + scale_shape_manual(values=c(1,16))
   p <- p + geom_vline(aes(xintercept=xcutoff), alpha=0.5, linetype=2)
   p <- p + geom_hline(aes(yintercept=ycutoff), alpha=0.5, linetype=2)
-  p <- p + geom_label(aes(x=xpos, y=ypos, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
-  p <- p + geom_label(aes(x=xpos, y=ypos, label=ytext), na.rm=TRUE, color="black", fill="white")
+  #p <- p + geom_label(aes(x=xpos, y=ypos, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
+  #p <- p + geom_label(aes(x=xpos, y=ypos, label=ytext), na.rm=TRUE, color="black", fill="white")
+  p <- p + geom_label(aes(x=xpos, y=-Inf, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
+  p <- p + geom_label(aes(x=Inf, y=ypos, label=ytext), hjust=0, na.rm=TRUE, color="black", fill="white")
+
   if( is.null(title) ){
     p <- p + labs(x=xlab, y=ylab, color=color_indicates, shape="Discordant")
   } else{
@@ -129,7 +133,15 @@ plot_compare <- function( plot_df, xlab, ylab, title, color_indicates, theme, xc
   }
   p <- p + coord_fixed(ratio=(max(x,na.rm=T)-min(x,na.rm=T))/(max(y,na.rm=T)-min(y,na.rm=T)))
   if( theme ){ p <- p + theme_bw(base_size=20) }
-  ggsave(p, file=paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), width=10, height=10)
+  p <- p + scale_colour_brewer(palette = "Set1")  
+  
+
+  gt <- ggplot_gtable(ggplot_build(p))
+  gt$layout$clip[gt$layout$name == "panel"] <- "off"
+  pdf(paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), 10, 10)
+  grid.draw(gt)
+  dev.off()
+  #ggsave(p, file=paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), width=10, height=10)
 }
 #--------------------------------------
 
@@ -147,6 +159,7 @@ plot_predicted <- function( plot_df, xlab, ylab, title, color_indicates, theme )
   p <- p + scale_y_continuous(limits = c(0,1))
   p <- p + coord_fixed(ratio=2)
   if( theme ){ p <- p + theme_bw(base_size=20) }
+  p <- p + scale_colour_brewer(palette = "Set1")
   ggsave(p, file=paste0(output_dir_prefix,".penalized_predicted.pdf"), width=10, height=10) 
 }
 #--------------------------------------
@@ -164,6 +177,7 @@ plot_consensus <- function( plot_df, xlab, ylab, title, color_indicates, theme )
   p <- p + xlim(c(0,max(plot_df$Count)))
   p <- p + coord_fixed(ratio=(max(plot_df$Count)+1)/nrow(plot_df))
   if( theme ){ p <- p + theme_bw(base_size=20) }
+  p <- p + scale_colour_brewer(palette = "Set1")
   ggsave(p, file=paste0(output_dir_prefix,".penalized_consensus.pdf"), width=10, height=10)
 }
 #--------------------------------------

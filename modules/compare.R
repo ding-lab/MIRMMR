@@ -1,5 +1,6 @@
 #Compare results from various MSI status prediction methods
 suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(grid))
 
 binary_columns <- which(apply(df[,fdc:ncol(df)],2,function(x) length(levels(as.factor(x))))==2)
 numeric_columns <- which(apply(df[,fdc:ncol(df)],2,function(x) length(levels(as.factor(x))))!=2)
