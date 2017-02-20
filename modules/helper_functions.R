@@ -121,8 +121,6 @@ plot_compare <- function( plot_df, xlab, ylab, title, color_indicates, theme, xc
   p <- p + scale_shape_manual(values=c(1,16))
   p <- p + geom_vline(aes(xintercept=xcutoff), alpha=0.5, linetype=2)
   p <- p + geom_hline(aes(yintercept=ycutoff), alpha=0.5, linetype=2)
-  #p <- p + geom_label(aes(x=xpos, y=ypos, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
-  #p <- p + geom_label(aes(x=xpos, y=ypos, label=ytext), na.rm=TRUE, color="black", fill="white")
   p <- p + geom_label(aes(x=xpos, y=-Inf, label=xtext), vjust=1, na.rm=TRUE, color="black", fill="white")
   p <- p + geom_label(aes(x=Inf, y=ypos, label=ytext), hjust=0, na.rm=TRUE, color="black", fill="white")
 
@@ -135,13 +133,12 @@ plot_compare <- function( plot_df, xlab, ylab, title, color_indicates, theme, xc
   if( theme ){ p <- p + theme_bw(base_size=20) }
   p <- p + scale_colour_brewer(palette = "Set1")  
   
-
+  #Helpful hint from Stack Overflow: http://stackoverflow.com/questions/12409960/ggplot2-annotate-outside-of-plot/12417481#12417481
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
   pdf(paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), 10, 10)
   grid.draw(gt)
   dev.off()
-  #ggsave(p, file=paste0(output_dir_prefix,".compare_models_discordance.",xlab,"-",ylab,".pdf"), width=10, height=10)
 }
 #--------------------------------------
 
