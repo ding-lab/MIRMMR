@@ -53,7 +53,7 @@ There are several options relevant to plotting (only in compare and penalized mo
 ### Compare
 Compare the results obtained through various methods with the compare module. Use --plot=TRUE to visualize results. Data columns could include MIRMMR scores, other quantitive method outcomes, and other binary (TRUE/FALSE) method outcomes.
 ```
-Rscript murmur.R -m compare -f data.frame -c first.data.column -o output.prefix -d output.directory
+Rscript murmur.R -m compare -f data.frame -c first.data.column -o output.prefix -d output.directory [options]
 ```
 ### Penalized
 The penalized module uses penalized regression to fit a logistic model. There are many command line options relevant to only this module.
