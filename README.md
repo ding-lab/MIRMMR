@@ -13,6 +13,7 @@ Rscript murmur.R --help
 ``` 
 
 ### Required R packages: 
+
 +doMC
 +gplot2
 +glmnet
@@ -22,6 +23,7 @@ Rscript murmur.R --help
 
 ### Main inputs
 There are 6 major inputs required by most modules.
+
 | Input | Explanation |
 | --- | --- |
 | `-m, --module` | One of compare, penalized, predict, stepwise, or univariate |
@@ -36,6 +38,7 @@ The default behavior is to not overwrite existing files. Set `--overwrite=TRUE` 
 
 ### Plotting
 There are several options relevant to plotting (only in compare and penalized modules)
+
 | Option | Default | Explanation |
 | --- | --- | --- |
 | `--plots` | FALSE | Generate plots |
@@ -49,6 +52,7 @@ There are several options relevant to plotting (only in compare and penalized mo
 # Modules
 ### Penalized
 The penalized module uses penalized regression to fit a logistic model. There are many command line options relevant to only this module.
+
 | Option | Default | Explanation |
 | --- | --- | --- |
 | `--alpha` | 0.9 | Desired alpha level for penalized regression (0 is ridge, 1 is lasso) |
