@@ -19,7 +19,7 @@ for(i in 1:n_numeric){
   cutoffs[i] <- roc_df[which(max(roc_df[,1]+1-roc_df[,2])==roc_df[,1]+1-roc_df[,2]),3]
   auc_measure <- auc( roc_df )
   print(paste0(method," Cutoff: ", cutoffs[i], " Sensitivity: ", roc_df[which(max(roc_df[,1]+1-roc_df[,2])==roc_df[,1]+1-roc_df[,2]),1], " Specificity: ", 1-roc_df[which(max(roc_df[,1]+1-roc_df[,2])==roc_df[,1]+1-roc_df[,2]),2]))
-  plot_df <- rbind(plot_df, data.frame(tpr=roc_df[,1], fpr=roc_df[,2], method=rep(paste0("\n",method, "\nAUC=", format(auc_measure,digits=4), "\nCutoff=", format(cutoffs[i],digits=4),"\n"),nrow(roc_df))))
+  plot_df <- rbind(plot_df, data.frame(tpr=roc_df[,1], fpr=roc_df[,2], method=rep(paste0("\n",method, "\nAUC=", format(auc_measure,digits=4), "\n"), nrow(roc_df)))) #"\nCutoff=", format(cutoffs[i],digits=4),"\n"),nrow(roc_df))))
 }
 
 plot_roc( plot_df, xlab="False positive rate", ylab="True positive rate", title=opt$title, color_indicates="Method", theme=opt$theme_bw )
