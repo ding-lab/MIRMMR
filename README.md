@@ -26,12 +26,12 @@ There are 6 major inputs required by most modules.
 
 | Input | Explanation |
 | --- | --- |
-| `-m, --module` | One of compare, penalized, predict, stepwise, or univariate |
-| `-f, --data_frame` | A file that R can read as a data.frame containing one row per sample, and a group of meta information columns (columns 1:(c-1)) followed by data columns (columns c:end). Column headers must be included. |
-| `-i, --msi_status` | The column name referring to the column with binary 'known truth' status calls. Works better if TRUE corresponds to having whatever condition is being tested, but can also be binary factors. |
-| `-c, --first_data_column` | The number of the first data column that will be used for regression (assumes the remaining columns greater than --c are also data columns. | 
-| `-o, --output_prefix` | File name prefix to use when writing output files |
-| `-d, --output_directory` | Directory name (relative or absolute) to use when writing output files |
+| `-m` | One of compare, penalized, predict, stepwise, or univariate |
+| `-f` | A file that R can read as a data.frame containing one row per sample, and a group of meta information columns (columns 1:(c-1)) followed by data columns (columns c:end). Column headers must be included. |
+| `-i` | The column name referring to the column with binary 'known truth' status calls. Works better if TRUE corresponds to having whatever condition is being tested, but can also be given as a binary vector that can be coerced to TRUE/FALSE. |
+| `-c` | The number of the first data column that will be used for regression (assumes the remaining columns greater than it are also data columns). | 
+| `-o` | File name prefix to use when writing output files |
+| `-d` | Directory name (relative or absolute) to use when writing output files |
 
 ### Overwriting
 The default behavior is to not overwrite existing files. Set `--overwrite=TRUE` to overwrite existing files.
