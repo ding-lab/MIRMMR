@@ -1,5 +1,8 @@
 # MIRMMR (murmur)
 Microsatellite Instability Regression using Methylation and Mutations in R
+
+> All models are wrong but some are useful. --George Box, statistician
+
 ---
 # Usage
 ```
@@ -7,7 +10,7 @@ Rscript murmur.R -m module -f data.frame -i msi.status -c first.data.column -o o
 ```
 
 ### Parameter specification
-With single character flags (e.g. -m, -f), do not use an equals sign. With full word flags (e.g. --plots, --xlabel) use with an equals sign like --plots==TRUE or --xlabel="My X label".
+With single character flags (e.g. -m, -f), do not use an equals sign. With full word flags (e.g. --plots, --xlabel) use with an equals sign like --plots=TRUE or --xlabel="My X label".
 
 ### Help 
 To generate a help message for more details and options, use --help.
