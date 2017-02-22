@@ -1,5 +1,5 @@
 # MIRMMR (murmur)
-Microsatellite Instability Regression using Methylation and Mutations in R
+Microsatellite Instability Regression using Methylation and Mutations in R. MIRMMR uses logistic regression model building to predict microsatellite instability (MSI) status. Model building modules include penalized, stepwise, and univarite regression techniques. Once a model is built, the predict module allows new data to be scored quickly. The compare module lets users compare the performance of multiple tools. Remember,
 
 > All models are wrong but some are useful. --George Box, statistician
 
@@ -47,18 +47,18 @@ There are several options relevant to plotting (only in compare and penalized mo
 
 | Option | Default | Explanation |
 | --- | --- | --- |
-| `--plots` | FALSE | Generate plots |
+| `--plots` | TRUE | Generate plots |
 | `--xlabel` | NULL | Set x-label text |
 | `--ylabel` | NULL | Set y-label text |
 | `--title` | NULL | Set plot title |
-| `--color_indicates` | NULL | Legend title, corresponds to --group option in penalized module and --msi_status column in compare module |
+| `--color_indicates` | NULL | Legend title, corresponds to `--group` option in penalized module and `--msi_status` column in compare module |
 | `--theme_bw` | FALSE | Set the ggplot2 theme to bw and increase font size (for publcations) |
 
 ---
 # Modules
 
 ### Compare
-Compare the results obtained through various methods with the compare module. Use --plots=TRUE to visualize results. Data columns could include MIRMMR scores, other quantitive method outcomes, and other binary (TRUE/FALSE or two factor vectors) method outcomes.
+Compare the results obtained through various methods with the compare module. Use `--plots=TRUE` to visualize results. Data columns could include MIRMMR scores, other quantitive method outcomes, and other binary (TRUE/FALSE or two factor vectors) method outcomes.
 
 ```
 Rscript murmur.R -m compare -f data.frame -c first.data.column -o output.prefix -d output.directory [options]
@@ -87,7 +87,7 @@ Rscript murmur.R -m penalized -f data.frame -i msi.status -c first.data.column -
 | `--type_measure` | class | Type of cross validation error that is used to find the optimal lambda (options: "mse", "deviance", "mae", "class", and "auc") |
 
 ### Predict
-The predict module predicts MSI status of new data (-f, --data_frame) based on a given prediction model. Identify the prediction model to use with --model (model should be saved as a unique object in an .Robj file).
+The predict module predicts MSI status of new data (`-f`, `--data_frame`) based on a given prediction model. Identify the prediction model to use with `--model` (model should be saved as a unique object in an .Robj file).
 
 ```
 Rscript murmur.R -m predict -f data.frame -c first.data.column -o output.prefix -d output.directory
