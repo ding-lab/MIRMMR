@@ -1,7 +1,7 @@
 # MIRMMR (murmur)
-*M*icrosatellite *I*nstability *R*egression using *M*ethylation and *M*utations in *R*
+**M**icrosatellite **I**nstability **R**egression using **M**ethylation and **M**utations in **R**
 
-MIRMMR uses logistic regression model building to predict microsatellite instability (MSI) status. Model building modules include *penalized*, *stepwise*, and *univarite* regression techniques. Once a model is built, the *predict* module allows new data to be scored quickly. The *compare* module lets users compare the performance of multiple tools. Remember,
+MIRMMR uses logistic regression model building to predict microsatellite instability (MSI) status. Model building modules include **penalized**, **stepwise**, and **univarite** regression techniques. Once a model is built, the **predict** module allows new data to be scored quickly. The **compare** module lets users compare the performance of multiple tools. Remember,
 
 > All models are wrong but some are useful. --George Box, statistician
 
