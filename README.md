@@ -20,14 +20,14 @@ To generate a help message for more details and options, use --help.
 Rscript murmur.R --help
 ``` 
 
-### Required R packages 
+### R packages 
 
-+ doMC
-+ ggplot2
-+ glmnet
-+ grid
-+ MASS
-+ optparse 
++ doMC (suggested)
++ ggplot2 (suggested)
++ glmnet (suggested)
++ grid (suggested)
++ MASS (suggested)
++ optparse (required)
 
 ### Main inputs
 There are 6 major inputs required by most modules.
@@ -35,11 +35,11 @@ There are 6 major inputs required by most modules.
 | Input | Explanation |
 | --- | --- |
 | `-m`,<br>`--module` | The module to be run, must be one of "compare", "penalized", "predict", "stepwise", or "univariate" |
-| `-f`,<br>`--data_frame` | A file that R can read as a data.frame containing one row per sample and a group of meta information columns (columns 1:(c-1)) followed by a group of data columns (columns c:end). Column headers must be included. |
-| `-i`,<br>`--msi_status` | The column name referring to the column with binary 'known truth' status calls. For the data in this column, things work better if TRUE corresponds to having whatever condition is being tested, but it also works if the data is stored as a binary vector that can be coerced to TRUE/FALSE. |
-| `-c`,<br>`--first_data_column` | The number of the first data column that will be used as a regression predictor (assumes the remaining columns greater than it are also data columns that will be used as regression predictors) | 
-| `-o`,<br>`--output_prefix` | File name prefix to use when writing output files |
-| `-d`,<br>`--output_directory` | Directory name (relative or absolute path) to use when writing output files |
+| `-f`,<br>`--data_frame` | A file that R can read as a data.frame containing a header row, one row per sample, and a group of meta information columns (columns 1:(c-1)) followed by a group of data columns (columns c:end) |
+| `-i`,<br>`--msi_status` | Name of the column with binary 'known truth' status calls. For the data in this column, things work better if TRUE corresponds to having whatever condition is being tested, but it also works if the data is stored as a binary vector that can be coerced to TRUE/FALSE. |
+| `-c`,<br><nobr>`--first_data_column`</nobr> | The number of the first data column that will be used as a regression predictor (assumes the remaining columns greater than it are also data columns that will be used as regression predictors) | 
+| `-o`,<br><nobr>`--output_prefix`</nobr> | File name prefix to use when writing output files |
+| `-d`,<br><nobr>`--output_directory`</nobr> | Directory name (relative or absolute path) to use when writing output files |
 
 ### Overwriting
 The default behavior is to not overwrite existing files. Set `--overwrite=TRUE` to overwrite existing files.
@@ -53,8 +53,8 @@ There are several options relevant to plotting (only in compare and penalized mo
 | `--xlabel` | NULL | Set x-label text |
 | `--ylabel` | NULL | Set y-label text |
 | `--title` | NULL | Set plot title |
-| `--color_indicates` | NULL | Legend title, corresponds to `--group` option in penalized module and `--msi_status` column in compare module |
-| `--theme_bw` | FALSE | Set the ggplot2 theme to bw and increase font size (for publcations) |
+| <nobr>`--color_indicates`</nobr> | NULL | Legend title, corresponds to `--group` option in penalized module and `--msi_status` column in compare module |
+| `--theme_bw` | FALSE | Set the ggplot2 theme to bw and increase font size (for publications) |
 
 ---
 # Modules
@@ -81,18 +81,18 @@ Rscript murmur.R -m penalized -f data.frame -i msi.status -c first.data.column -
 | `--lambda` | lambda.min | Procedure used by glmnet::cv.glmnet to report lambda (options: "lambda.min", "lambda.1se") |
 | `--nfolds` | 10 | Number of folds to divide the data into for cross validation | 
 | `--parallel` | FALSE | glmnet has built-in parallelization you can access if you have multiple cores | 
-| `--par_cores` | 1 | Number of parallel cores to use. Find out how many cores you have with parallel::detectCores(). |
-| `--repeats` | 1000 | Number of times to perform cross validation when selecting lambda or performing consensus variable finding. |
+| `--par_cores` | 1 | Number of parallel cores to use; detect number of cores with parallel::detectCores() |
+| `--repeats` | 1000 | Number of times to perform cross validation when selecting lambda or performing consensus variable finding |
 | `--set_seed` | 0 (not set) | Seed value at the beginning to replicate previous results (cross validation is random) |
 | `--train` | FALSE | Select a subset of data to train model and test the model with the remaining data | 
-| `--train_proportion` | 0.8 | Proportion of samples to put in your training set with --train=TRUE |
-| `--type_measure` | class | Type of cross validation error that is used to find the optimal lambda (options: "mse", "deviance", "mae", "class", and "auc") |
+| <nobr>`--train_proportion`</nobr> | 0.8 | Proportion of samples to put in your training set with --train=TRUE |
+| <nobr>`--type_measure`</nobr> | class | Type of cross validation error that is used to find the optimal lambda (options: "mse", "deviance", "mae", "class", and "auc") |
 
 ### Predict
 The predict module predicts MSI status of new data (`-f`, `--data_frame`) based on a given prediction model. Identify the prediction model to use with `--model` (model should be saved as a unique object in an .Robj file).
 
 ```
-Rscript murmur.R -m predict -f data.frame -c first.data.column -o output.prefix -d output.directory
+Rscript murmur.R -m predict -f data.frame -c first.data.column -o output.prefix -d output.directory --model="model.Robj"
 ```
 
 ### Stepwise
