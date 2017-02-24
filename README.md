@@ -37,9 +37,9 @@ There are 6 major inputs required by most modules.
 | `-m`,<br>`--module` | The module to be run, must be one of "compare", "penalized", "predict", "stepwise", or "univariate" |
 | `-f`,<br>`--data_frame` | A file that R can read as a data.frame containing a header row, one row per sample, and a group of meta information columns (columns 1:(c-1)) followed by a group of data columns (columns c:end) |
 | `-i`,<br>`--msi_status` | Name of the column with binary 'known truth' status calls. For the data in this column, things work better if TRUE corresponds to having whatever condition is being tested, but it also works if the data is stored as a binary vector that can be coerced to TRUE/FALSE. |
-| `-c`,<br><nobr>`--first_data_column`</nobr> | The number of the first data column that will be used as a regression predictor (assumes the remaining columns greater than it are also data columns that will be used as regression predictors) | 
-| `-o`,<br><nobr>`--output_prefix`</nobr> | File name prefix to use when writing output files |
-| `-d`,<br><nobr>`--output_directory`</nobr> | Directory name (relative or absolute path) to use when writing output files |
+| `-c`,<br>`&#x2011;&#x2011;first_data_column` | The number of the first data column that will be used as a regression predictor (assumes the remaining columns greater than it are also data columns that will be used as regression predictors) | 
+| `-o`,<br>`&#x2011;&#x2011;output_prefix` | File name prefix to use when writing output files |
+| `-d`,<br>`--output_directory` | Directory name (relative or absolute path) to use when writing output files |
 
 ### Overwriting
 The default behavior is to not overwrite existing files. Set `--overwrite=TRUE` to overwrite existing files.
@@ -53,7 +53,7 @@ There are several options relevant to plotting (only in compare and penalized mo
 | `--xlabel` | NULL | Set x-label text |
 | `--ylabel` | NULL | Set y-label text |
 | `--title` | NULL | Set plot title |
-| <nobr>`--color_indicates`</nobr> | NULL | Legend title, corresponds to `--group` option in penalized module and `--msi_status` column in compare module |
+| `&#x2011;&#x2011;color_indicates` | NULL | Legend title, corresponds to `--group` option in penalized module and `--msi_status` column in compare module |
 | `--theme_bw` | FALSE | Set the ggplot2 theme to bw and increase font size (for publications) |
 
 ---
@@ -85,8 +85,8 @@ Rscript murmur.R -m penalized -f data.frame -i msi.status -c first.data.column -
 | `--repeats` | 1000 | Number of times to perform cross validation when selecting lambda or performing consensus variable finding |
 | `--set_seed` | 0 (not set) | Seed value at the beginning to replicate previous results (cross validation is random) |
 | `--train` | FALSE | Select a subset of data to train model and test the model with the remaining data | 
-| <nobr>`--train_proportion`</nobr> | 0.8 | Proportion of samples to put in your training set with --train=TRUE |
-| <nobr>`--type_measure`</nobr> | class | Type of cross validation error that is used to find the optimal lambda (options: "mse", "deviance", "mae", "class", and "auc") |
+| `&#x2011;&#x2011;train_proportion` | 0.8 | Proportion of samples to put in your training set with --train=TRUE |
+| `&#x2011;&#x2011;type_measure` | class | Type of cross validation error that is used to find the optimal lambda (options: "mse", "deviance", "mae", "class", and "auc") |
 
 ### Predict
 The predict module predicts MSI status of new data (`-f`, `--data_frame`) based on a given prediction model. Identify the prediction model to use with `--model` (model should be saved as a unique object in an .Robj file).
